@@ -22,7 +22,7 @@ docker container prune -f
 echo "--cleaning existing image ..."
 img_num=`docker image ls |wc -l`
 if [ $img_num -gt 1 ];then
-    docker image ls|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
+    docker image ls|grep -v REPOSITORY|grep forta|awk '{print $3}'|xargs docker rmi
 fi
 
 echo "--removing existing forta binary ..."
