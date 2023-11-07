@@ -395,7 +395,7 @@ func (bot *botClient) StartProcessing() {
 	go bot.processTransactions()
 	go bot.processBlocks()
 	go bot.processCombinationAlerts()
-	go bot.processHealthChecks()
+	//go bot.processHealthChecks()
 }
 
 func processRequests[R any](
