@@ -350,6 +350,7 @@ func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*ty
 		return nil, err
 	}
 	for _, c := range containers {
+		log.Infof("[CONTAINERS-ELM] - %s", c.Names[0][1:])
 		if c.Names[0][1:] == name {
 			return &c, nil
 		}
