@@ -92,12 +92,12 @@ func (bc *botClient) LaunchBot(ctx context.Context, botConfig config.AgentConfig
 		log.Infof("[REJJIE-DEBUG] - GEN AGENT BOT - --XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 		// if the bot container doesn't exist, create and start the container
 		botContainerCfg := NewBotContainerConfig(botNetworkID, botConfig, bc.logConfig, bc.resourcesConfig)
-		log.Infof("[REJJIE-DEBUG] - FROM func <LaunchBot> GEN AGENT BOT - INFO--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-		log.Infof("[REJJIE-DEBUG] - FROM func <LaunchBot> GEN AGENT BOT - [NAME]--[%s]", botContainerCfg.Name)
-		log.Infof("[REJJIE-DEBUG] - FROM func <LaunchBot> GEN AGENT BOT - [ENV]--[%s]", botContainerCfg.Env)
-		log.Infof("[REJJIE-DEBUG] - FROM func <LaunchBot> GEN AGENT BOT - [NETWORK_IDS]--[%s]", botContainerCfg.LinkNetworkIDs)
-		log.Infof("[REJJIE-DEBUG] - FROM func <LaunchBot> GEN AGENT BOT - [PORTS]--[%s]", botContainerCfg.Ports)
-		log.Infof("[REJJIE-DEBUG] - FROM func <LaunchBot> GEN AGENT BOT - INFO--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+		log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - INFO--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+		log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [NAME]--[%s]", botContainerCfg.Name)
+		log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [ENV]--[%s]", botContainerCfg.Env)
+		log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [NETWORK_IDS]--[%s]", botContainerCfg.LinkNetworkIDs)
+		log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [PORTS]--[%s]", botContainerCfg.Ports)
+		log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - INFO--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 		_, err = bc.client.StartContainer(ctx, botContainerCfg)
 		if err != nil {
