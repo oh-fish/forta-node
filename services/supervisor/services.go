@@ -220,7 +220,8 @@ func (sup *SupervisorService) start() error {
 		Name:  config.DockerNatsContainerName,
 		Image: "nats:2.3.2",
 		Ports: map[string]string{
-			"4222": "4222",
+			//"4222": "4222",
+			"4222": config.DefaultNatsPort,
 			"6222": "6222",
 			"8222": "8222",
 		},
@@ -294,6 +295,7 @@ func (sup *SupervisorService) start() error {
 			Name:  config.DockerJSONRPCProxyContainerName,
 			Image: commonNodeImage,
 			Cmd:   []string{config.DefaultFortaNodeBinaryPath, "json-rpc"},
+			Env:   config.EnvBase(nil),
 			Volumes: map[string]string{
 				// give access to host docker
 				"/var/run/docker.sock": "/var/run/docker.sock",
@@ -319,6 +321,7 @@ func (sup *SupervisorService) start() error {
 			Name:  config.DockerPublicAPIProxyContainerName,
 			Image: commonNodeImage,
 			Cmd:   []string{config.DefaultFortaNodeBinaryPath, "public-api"},
+			Env:   config.EnvBase(nil),
 			Volumes: map[string]string{
 				// give access to host docker
 				"/var/run/docker.sock": "/var/run/docker.sock",
@@ -358,6 +361,7 @@ func (sup *SupervisorService) start() error {
 			Name:  config.DockerInspectorContainerName,
 			Image: commonNodeImage,
 			Cmd:   []string{config.DefaultFortaNodeBinaryPath, "inspector"},
+			Env:   config.EnvBase(nil),
 			Volumes: map[string]string{
 				hostFortaDir: config.DefaultContainerFortaDirPath,
 			},
@@ -402,9 +406,9 @@ func (sup *SupervisorService) start() error {
 			Name:  config.DockerScannerContainerName,
 			Image: commonNodeImage,
 			Cmd:   []string{config.DefaultFortaNodeBinaryPath, "scanner"},
-			Env: map[string]string{
+			Env: config.EnvBase(map[string]string{
 				config.EnvReleaseInfo: releaseInfo.String(),
-			},
+			}),
 			Volumes: map[string]string{
 				hostFortaDir: config.DefaultContainerFortaDirPath,
 			},
@@ -431,9 +435,9 @@ func (sup *SupervisorService) start() error {
 			Name:  config.DockerJWTProviderContainerName,
 			Image: commonNodeImage,
 			Cmd:   []string{config.DefaultFortaNodeBinaryPath, "jwt-provider"},
-			Env: map[string]string{
+			Env: config.EnvBase(map[string]string{
 				config.EnvReleaseInfo: releaseInfo.String(),
-			},
+			}),
 			Volumes: map[string]string{
 				// give access to host docker
 				"/var/run/docker.sock": "/var/run/docker.sock",
@@ -764,11 +768,11 @@ func (sup *SupervisorService) handleInspectionResults(payload *protocol.Inspecti
 }
 
 func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*SupervisorService, error) {
-	dockerClient, err := docker.NewDockerClient(containers.LabelFortaSupervisor)
+	dockerClient, err := docker.NewDockerClient(fmt.Sprintf("%s_supervisor", config.DockerClientNamePrefix))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the docker client: %v", err)
 	}
-	globalClient, err := docker.NewDockerClient("")
+	globalClient, err := docker.NewDockerClient(config.GlobalDockerClientName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the global docker client: %v", err)
 	}

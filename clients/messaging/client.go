@@ -35,7 +35,7 @@ func NewClient(name, natsURL string) *Client {
 		if err == nil {
 			break
 		}
-		logger.WithError(err).Error("failed to connect to nats server")
+		//logger.WithError(err).Error("failed to connect to nats server")
 		time.Sleep(time.Second * 1) // don't retry too quickly - maybe it's not up yet
 	}
 	if err != nil {

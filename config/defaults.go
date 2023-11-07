@@ -1,12 +1,13 @@
 package config
 
-const (
+var (
 	DefaultKeysDirName           = ".keys"
 	DefaultCombinerCacheFileName = ".combiner_cache.json"
 	DefaultConfigFileName        = "config.yml"
 	DefaultWrappedConfigFileName = "wrapped-config.yml"
 	DefaultConfigWrapperKey      = "x-forta-config"
 	DefaultNatsPort              = "4222"
+	DefaultIPFSPort              = "5001"
 	DefaultContainerPort         = "8089"
 	DefaultHealthPort            = "8090"
 	DefaultJWTProviderPort       = "8515"

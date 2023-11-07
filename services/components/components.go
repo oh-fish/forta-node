@@ -96,7 +96,7 @@ func GetBotLifecycleComponents(ctx context.Context, botLifeConfig BotLifecycleCo
 			cfg.LocalModeConfig.ContainerRegistry.Password,
 		)
 	} else {
-		botImageClient, err = docker.NewDockerClient("")
+		botImageClient, err = docker.NewDockerClient(config.GlobalDockerClientName)
 	}
 	if err != nil {
 		return BotLifecycle{}, fmt.Errorf("failed to create the bot image docker client: %v", err)

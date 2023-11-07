@@ -21,7 +21,7 @@ type nodeReleaseInfo struct {
 }
 
 func handleFortaVersion(cmd *cobra.Command, args []string) error {
-	dockerClient, err := docker.NewDockerClient("")
+	dockerClient, err := docker.NewDockerClient(config.GlobalDockerClientName)
 	if err != nil {
 		return fmt.Errorf("failed to create the docker client: %v", err)
 	}

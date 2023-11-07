@@ -19,11 +19,11 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the image store: %v", err)
 	}
-	dockerClient, err := docker.NewDockerClient("runner")
+	dockerClient, err := docker.NewDockerClient(fmt.Sprintf("%s_runner", config.DockerClientNamePrefix))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the docker client: %v", err)
 	}
-	globalDockerClient, err := docker.NewDockerClient("")
+	globalDockerClient, err := docker.NewDockerClient(config.GlobalDockerClientName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the docker client: %v", err)
 	}

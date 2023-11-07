@@ -5,13 +5,15 @@ import (
 	"path"
 )
 
-const ContainerNamePrefix = "forta"
-
 // Docker container names
 var (
+	ContainerNamePrefix   = "forta"
 	DockerSupervisorImage = "forta-network/forta-node:latest"
 	DockerUpdaterImage    = "forta-network/forta-node:latest"
 	UseDockerImages       = "local"
+
+	DockerClientNamePrefix = ""
+	GlobalDockerClientName = ""
 
 	DockerSupervisorManagedContainers = 6
 	DockerUpdaterContainerName        = fmt.Sprintf("%s-updater", ContainerNamePrefix)

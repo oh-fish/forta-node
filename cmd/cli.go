@@ -150,6 +150,7 @@ publishes alerts about them`,
 
 // Execute executes the root command.
 func Execute() error {
+	config.InitFromEnv()
 	return cmdForta.Execute()
 }
 

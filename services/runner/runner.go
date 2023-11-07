@@ -65,16 +65,16 @@ func NewRunner(ctx context.Context, cfg config.Config,
 
 // Start starts the service.
 func (runner *Runner) Start() error {
-	if err := runner.doStartUpCheck(); err != nil {
-		return fmt.Errorf("start-up check failed: %v", err)
-	}
-	log.Info("start-up check successful")
+	//if err := runner.doStartUpCheck(); err != nil {
+	//	return fmt.Errorf("start-up check failed: %v", err)
+	//}
+	//log.Info("start-up check successful")
 
 	if err := runner.globalClient.Nuke(context.Background()); err != nil {
 		return fmt.Errorf("failed to nuke leftover containers at start: %v", err)
 	}
 
-	health.StartServer(runner.ctx, "", healthutils.DefaultHealthServerErrHandler, runner.CheckServiceHealth)
+	health.StartServer(runner.ctx, config.DefaultHealthPort, healthutils.DefaultHealthServerErrHandler, runner.CheckServiceHealth)
 
 	if runner.cfg.AutoUpdate.Disable {
 		runner.startEmbeddedSupervisor()
@@ -85,7 +85,7 @@ func (runner *Runner) Start() error {
 
 	go runner.keepContainersAlive()
 
-	prometheus.StartCollector(runner, nil, runner.cfg.PrometheusConfig.Port)
+	prometheus.StartCollector(runner, nil, config.GenPrometheusPort())
 
 	return nil
 }
@@ -297,10 +297,10 @@ func (runner *Runner) startUpdater(logger *log.Entry, latestRefs store.ImageRefs
 		Name:  config.DockerUpdaterContainerName,
 		Image: updaterRef,
 		Cmd:   []string{config.DefaultFortaNodeBinaryPath, "updater"},
-		Env: map[string]string{
+		Env: config.EnvBase(map[string]string{
 			config.EnvDevelopment: strconv.FormatBool(runner.cfg.Development),
 			config.EnvReleaseInfo: latestRefs.ReleaseInfo.String(),
-		},
+		}),
 		Volumes: map[string]string{
 			runner.cfg.FortaDir: config.DefaultContainerFortaDirPath,
 		},
@@ -335,11 +335,11 @@ func (runner *Runner) startSupervisor(logger *log.Entry, latestRefs store.ImageR
 		Name:  config.DockerSupervisorContainerName,
 		Image: supervisorRef,
 		Cmd:   []string{config.DefaultFortaNodeBinaryPath, "supervisor"},
-		Env: map[string]string{
+		Env: config.EnvBase(map[string]string{
 			// supervisor needs to know and mount the forta dir on the host os
 			config.EnvHostFortaDir: runner.cfg.FortaDir,
 			config.EnvReleaseInfo:  latestRefs.ReleaseInfo.String(),
-		},
+		}),
 		Volumes: map[string]string{
 			// give access to host docker
 			"/var/run/docker.sock": "/var/run/docker.sock",

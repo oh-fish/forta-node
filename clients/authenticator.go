@@ -89,7 +89,7 @@ func (p *ipAuthenticator) handleAgentStatusRunning(payload messaging.AgentPayloa
 }
 
 func NewBotAuthenticator(ctx context.Context) (IPAuthenticator, error) {
-	globalClient, err := docker.NewDockerClient("")
+	globalClient, err := docker.NewDockerClient(config.GlobalDockerClientName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the global docker client: %v", err)
 	}

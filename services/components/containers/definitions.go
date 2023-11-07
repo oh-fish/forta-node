@@ -36,7 +36,7 @@ func NewBotContainerConfig(
 		Image:          botConfig.Image,
 		NetworkID:      networkID,
 		LinkNetworkIDs: []string{},
-		Env: map[string]string{
+		Env: config.EnvBase(map[string]string{
 			config.EnvJsonRpcHost:        config.DockerJSONRPCProxyContainerName,
 			config.EnvJsonRpcPort:        config.DefaultJSONRPCProxyPort,
 			config.EnvJWTProviderHost:    config.DockerJWTProviderContainerName,
@@ -47,7 +47,7 @@ func NewBotContainerConfig(
 			config.EnvFortaBotID:         botConfig.ID,
 			config.EnvFortaBotOwner:      botConfig.Owner,
 			config.EnvFortaChainID:       fmt.Sprintf("%d", botConfig.ChainID),
-		},
+		}),
 		MaxLogFiles: logConfig.MaxLogFiles,
 		MaxLogSize:  logConfig.MaxLogSize,
 		CPUQuota:    limits.CPUQuota,
