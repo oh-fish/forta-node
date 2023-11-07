@@ -456,6 +456,10 @@ func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfi
 	// If we already have the container but it is not running, then just start it.
 	var foundContainer *types.Container
 	for _, c := range containers {
+		log.WithFields(log.Fields{
+			"image": config.Image,
+			"name":  config.Name,
+		}).Info("[CONTAINERS-ELM] - [%s] - ", c.Names)
 		if len(c.Names) == 0 {
 			continue
 		}
