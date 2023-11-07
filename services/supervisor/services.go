@@ -10,6 +10,8 @@ import (
 	"sync"
 	"time"
 
+	dxType "github.com/docker/docker/api/types"
+	dclient "github.com/docker/docker/client"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/forta-network/forta-core-go/clients/agentlogs"
 	"github.com/forta-network/forta-core-go/clients/health"
@@ -153,7 +155,6 @@ func (sup *SupervisorService) start() error {
 	//supervisorContainer, err := sup.globalClient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
 	supervisorContainer, err := sup.searchclient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
 	if err != nil {
-		log.Info(fmt.Sprintf("[REJJIE-DEBUG] - ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"))
 		return fmt.Errorf("failed to get the supervisor container: %v", err)
 	}
 	commonNodeImage := supervisorContainer.Image
@@ -433,32 +434,49 @@ func (sup *SupervisorService) start() error {
 	}
 	sup.addContainerUnsafe(sup.scannerContainer)
 
-	sup.jwtProviderContainer, err = sup.client.StartContainer(
-		sup.ctx, docker.ContainerConfig{
-			Name:  config.DockerJWTProviderContainerName,
-			Image: commonNodeImage,
-			Cmd:   []string{config.DefaultFortaNodeBinaryPath, "jwt-provider"},
-			Env: config.EnvBase(map[string]string{
-				config.EnvReleaseInfo: releaseInfo.String(),
-			}),
-			Volumes: map[string]string{
-				// give access to host docker
-				"/var/run/docker.sock": "/var/run/docker.sock",
-				hostFortaDir:           config.DefaultContainerFortaDirPath,
+	log.Infof("[REJJIE-INFO] - Trying to find the forta-jwt-provider container ...")
+	var tryToFoundJWTContainer = false
+	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
+	if err != nil {
+		log.Errorf("dclient generating error %v", err)
+	}
+	dxContainers, _ := dcli.ContainerList(sup.ctx, dxType.ContainerListOptions{})
+	for _, _c := range dxContainers {
+		if _c.Names[0][1:] == config.DockerJWTProviderContainerName {
+			tryToFoundJWTContainer = true
+			log.Infof("[REJJIE-INFO] - Found the running container [%s]", config.DockerJWTProviderContainerName)
+		}
+	}
+
+	if !tryToFoundJWTContainer {
+		log.Infof("[REJJIE-INFO] - Trying to start container [%s] ", config.DockerJWTProviderContainerName)
+		sup.jwtProviderContainer, err = sup.client.StartContainer(
+			sup.ctx, docker.ContainerConfig{
+				Name:  config.DockerJWTProviderContainerName,
+				Image: commonNodeImage,
+				Cmd:   []string{config.DefaultFortaNodeBinaryPath, "jwt-provider"},
+				Env: config.EnvBase(map[string]string{
+					config.EnvReleaseInfo: releaseInfo.String(),
+				}),
+				Volumes: map[string]string{
+					// give access to host docker
+					"/var/run/docker.sock": "/var/run/docker.sock",
+					hostFortaDir:           config.DefaultContainerFortaDirPath,
+				},
+				Ports: map[string]string{
+					"": config.DefaultHealthPort, // random host port
+				},
+				Files: map[string][]byte{
+					"passphrase": []byte(sup.config.Passphrase),
+				},
+				DialHost:       true,
+				NetworkID:      nodeNetworkID,
+				LinkNetworkIDs: []string{natsNetworkID},
+				MaxLogFiles:    sup.maxLogFiles,
+				MaxLogSize:     sup.maxLogSize,
 			},
-			Ports: map[string]string{
-				"": config.DefaultHealthPort, // random host port
-			},
-			Files: map[string][]byte{
-				"passphrase": []byte(sup.config.Passphrase),
-			},
-			DialHost:       true,
-			NetworkID:      nodeNetworkID,
-			LinkNetworkIDs: []string{natsNetworkID},
-			MaxLogFiles:    sup.maxLogFiles,
-			MaxLogSize:     sup.maxLogSize,
-		},
-	)
+		)
+	}
 	if err != nil {
 		return err
 	}
