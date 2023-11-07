@@ -105,7 +105,7 @@ func (sup *SupervisorService) Start() error {
 		return err
 	}
 
-	go sup.healthCheck()
+	//go sup.healthCheck()
 	go sup.refreshBotContainers()
 
 	return nil
