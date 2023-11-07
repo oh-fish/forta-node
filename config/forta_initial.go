@@ -11,7 +11,7 @@ import (
 // InitFromEnv Init the global vars from the environment settings
 func InitFromEnv() {
 	// check and override the default port config
-	DefaultNatsPort = typeparser.EnvGetString("FORTA_NATS_PORT", DefaultNatsPort)
+	//DefaultNatsPort = typeparser.EnvGetString("FORTA_NATS_PORT", DefaultNatsPort)
 	DefaultIPFSPort = typeparser.EnvGetString("FORTA_IPFS_PORT", DefaultIPFSPort)
 	DefaultContainerPort = typeparser.EnvGetString("FORTA_CONTAINER_PORT", DefaultContainerPort)
 	DefaultHealthPort = typeparser.EnvGetString("FORTA_HEALTH_PORT", DefaultHealthPort)
@@ -31,7 +31,7 @@ func InitFromEnv() {
 
 	DockerUpdaterContainerName = fmt.Sprintf("%s-updater", ContainerNamePrefix)
 	DockerSupervisorContainerName = fmt.Sprintf("%s-supervisor", ContainerNamePrefix)
-	DockerNatsContainerName = fmt.Sprintf("%s-nats", ContainerNamePrefix)
+	DockerNatsContainerName = fmt.Sprintf("%s-nats", "forta")
 	DockerIpfsContainerName = fmt.Sprintf("%s-ipfs", ContainerNamePrefix)
 	DockerScannerContainerName = fmt.Sprintf("%s-scanner", ContainerNamePrefix)
 	DockerInspectorContainerName = fmt.Sprintf("%s-inspector", ContainerNamePrefix)
