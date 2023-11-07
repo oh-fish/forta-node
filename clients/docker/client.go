@@ -461,12 +461,13 @@ func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfi
 		}
 
 		foundName := GetContainerName(c) // remove / in the beginning
-		log.WithFields(log.Fields{
-			"image": config.Image,
-			"name":  config.Name,
-		}).Info(fmt.Sprintf("[REJJIE-DEBUG] - foundName [%s] - config.name - [%s]", foundName, config.Name))
+
 		if foundName == config.Name {
 			foundContainer = &c
+			log.WithFields(log.Fields{
+				"image": config.Image,
+				"name":  config.Name,
+			}).Info(fmt.Sprintf("[REJJIE-DEBUG] - foundName [%s] - config.name - [%s] - container - [%v]", foundName, config.Name, c))
 			break
 		}
 	}

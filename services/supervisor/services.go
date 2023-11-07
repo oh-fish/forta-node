@@ -151,6 +151,7 @@ func (sup *SupervisorService) start() error {
 
 	supervisorContainer, err := sup.globalClient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
 	if err != nil {
+		log.Info(fmt.Sprintf("[REJJIE-DEBUG] - ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"))
 		return fmt.Errorf("failed to get the supervisor container: %v", err)
 	}
 	commonNodeImage := supervisorContainer.Image
