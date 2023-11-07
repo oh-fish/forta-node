@@ -367,7 +367,7 @@ func (d *dockerClient) GetContainerByID(ctx context.Context, id string) (*types.
 		return nil, err
 	}
 	for _, c := range containers {
-		log.Infof("[REJJIE-DEBUG] GetContainerByID() ----- [%s] ", c.ID)
+		//log.Infof("[REJJIE-DEBUG] GetContainerByID() ----- [%s] ", c.ID)
 		if c.ID == id {
 			return &c, nil
 		}
