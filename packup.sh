@@ -17,6 +17,7 @@ set -o pipefail
 #  sleep 1
 #done
 
+pkill forta
 docker container prune -f
 
 echo "--cleaning existing image ..."
