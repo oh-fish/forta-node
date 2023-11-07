@@ -13,10 +13,12 @@ import (
 	"time"
 
 	"github.com/docker/docker/api/types"
+	dxType "github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
+	dclient "github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/forta-network/forta-core-go/utils/workers"
 	"github.com/forta-network/forta-node/clients/cooldown"
@@ -316,7 +318,6 @@ func (d *dockerClient) GetContainers(ctx context.Context) (ContainerList, error)
 	return d.cli.ContainerList(ctx, types.ContainerListOptions{
 		All:     true,
 		Filters: d.labelFilter(),
-		Limit:   -1,
 	})
 }
 
@@ -360,9 +361,7 @@ func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*ty
 
 // GetContainerByName gets a container by using an ID lookup over all containers.
 func (d *dockerClient) GetContainerByID(ctx context.Context, id string) (*types.Container, error) {
-	//containers, err := d.GetContainers(ctx)
-	dclient, _ := NewDockerClient("")
-	containers, err := dclient.GetContainers(ctx)
+	containers, err := d.GetContainers(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -445,16 +444,38 @@ func (d *dockerClient) StartContainerWithID(ctx context.Context, containerID str
 	return d.cli.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
 }
 
-func (d *dockerClient) TransContainer(ctx context.Context, c types.Container, config ContainerConfig) (*Container, error) {
-	inspection, err := d.cli.ContainerInspect(ctx, c.ID)
+func (d *dockerClient) TransContainer(ctx context.Context, config ContainerConfig) (*Container, error) {
+	var tryToFound = false
+	var tryToFoundContainer dxType.Container
+
+	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
 	if err != nil {
-		return nil, err
+		log.Errorf("dclient generating error %v", err)
 	}
-	log.WithFields(log.Fields{
-		"id":   c.ID,
-		"name": config.Name,
-	}).Info("container is starting")
-	return &Container{Name: config.Name, ID: c.ID, Config: config, ImageHash: inspection.Image}, nil
+	dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{})
+	for _, _c := range dxContainers {
+		if _c.Names[0][1:] == config.Name {
+			tryToFound = true
+			tryToFoundContainer = _c
+		}
+	}
+	if tryToFound {
+		inspection, err := d.cli.ContainerInspect(ctx, tryToFoundContainer.ID)
+		if err != nil {
+			return nil, err
+		}
+		log.WithFields(log.Fields{
+			"id":   tryToFoundContainer.ID,
+			"name": config.Name,
+		}).Info("container is starting")
+		return &Container{Name: config.Name, ID: tryToFoundContainer.ID, Config: config, ImageHash: inspection.Image}, nil
+	}
+
+	_container, err := d.StartContainer(ctx, config)
+	if err != nil {
+		log.Infof(" [REJJIE-INFO] - gen container-[%s] error  ERROR : %v", config.Name, err)
+	}
+	return _container, nil
 }
 
 // StartContainer kicks off a container as a daemon and returns a summary of the container

@@ -30,7 +30,7 @@ type DockerClient interface {
 	StartContainerWithID(ctx context.Context, containerID string) error
 	StartContainer(ctx context.Context, config docker.ContainerConfig) (*docker.Container, error)
 	StopContainer(ctx context.Context, id string) error
-	TransContainer(ctx context.Context, c types.Container, config docker.ContainerConfig) (*docker.Container, error)
+	TransContainer(ctx context.Context, config docker.ContainerConfig) (*docker.Container, error)
 	InterruptContainer(ctx context.Context, id string) error
 	TerminateContainer(ctx context.Context, id string) error
 	ShutdownContainer(ctx context.Context, id string, timeout *time.Duration) error

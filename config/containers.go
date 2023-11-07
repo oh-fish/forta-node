@@ -20,7 +20,7 @@ var (
 	DockerSupervisorContainerName     = fmt.Sprintf("%s-supervisor", ContainerNamePrefix)
 	DockerNatsContainerName           = fmt.Sprintf("%s-nats", ContainerNamePrefix)
 	DockerIpfsContainerName           = fmt.Sprintf("%s-ipfs", ContainerNamePrefix)
-	DockerScannerContainerName        = fmt.Sprintf("%s-scanner", ContainerNamePrefix)
+	DockerScannerContainerName        = fmt.Sprintf("%s-scanner", "forta")
 	DockerInspectorContainerName      = fmt.Sprintf("%s-inspector", ContainerNamePrefix)
 	DockerJSONRPCProxyContainerName   = fmt.Sprintf("%s-json-rpc", ContainerNamePrefix)
 	DockerPublicAPIProxyContainerName = fmt.Sprintf("%s-public-api", ContainerNamePrefix)
