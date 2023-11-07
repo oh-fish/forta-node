@@ -38,12 +38,13 @@ type botClient struct {
 	resourcesConfig config.ResourcesConfig
 	client          clients.DockerClient
 	botImageClient  clients.DockerClient
+	searchClient    clients.DockerClient
 }
 
 // NewBotClient creates a new bot client to manage bot containers.
 func NewBotClient(
 	logConfig config.LogConfig, resourcesConfig config.ResourcesConfig,
-	client clients.DockerClient, botImageClient clients.DockerClient,
+	client clients.DockerClient, botImageClient clients.DockerClient, searchclient clients.DockerClient,
 ) *botClient {
 	botImageClient.SetImagePullCooldown(ImagePullCooldownThreshold, ImagePullCooldownDuration)
 	return &botClient{
@@ -51,6 +52,7 @@ func NewBotClient(
 		resourcesConfig: resourcesConfig,
 		client:          client,
 		botImageClient:  botImageClient,
+		searchClient:    searchclient,
 	}
 }
 
@@ -123,7 +125,8 @@ func (bc *botClient) attachServiceContainers(ctx context.Context, botNetworkID s
 
 func (bc *botClient) getServiceContainerIDs(ctx context.Context) (ids []string, err error) {
 	for _, containerName := range getServiceContainerNames() {
-		container, err := bc.client.GetContainerByName(ctx, containerName)
+		//container, err := bc.client.GetContainerByName(ctx, containerName)
+		container, err := bc.searchClient.GetContainerByName(ctx, containerName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get service container ids: %v", err)
 		}
