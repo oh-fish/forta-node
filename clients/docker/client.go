@@ -350,7 +350,6 @@ func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*ty
 		return nil, err
 	}
 	for _, c := range containers {
-		fmt.Print(c.Names)
 		if c.Names[0][1:] == name {
 			return &c, nil
 		}
@@ -460,11 +459,12 @@ func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfi
 		if len(c.Names) == 0 {
 			continue
 		}
+
 		foundName := GetContainerName(c) // remove / in the beginning
 		log.WithFields(log.Fields{
 			"image": config.Image,
 			"name":  config.Name,
-		}).Info("[CONTAINERS-ELM] - found name [%s] - ")
+		}).Info(fmt.Sprintf("[REJJIE-DEBUG] - foundName [%s] - config.name - [%s]", foundName, config.Name))
 		if foundName == config.Name {
 			foundContainer = &c
 			break
