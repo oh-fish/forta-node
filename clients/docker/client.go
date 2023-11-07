@@ -316,6 +316,7 @@ func (d *dockerClient) GetContainers(ctx context.Context) (ContainerList, error)
 	return d.cli.ContainerList(ctx, types.ContainerListOptions{
 		All:     true,
 		Filters: d.labelFilter(),
+		Limit:   -1,
 	})
 }
 
@@ -359,7 +360,9 @@ func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*ty
 
 // GetContainerByName gets a container by using an ID lookup over all containers.
 func (d *dockerClient) GetContainerByID(ctx context.Context, id string) (*types.Container, error) {
-	containers, err := d.GetContainers(ctx)
+	//containers, err := d.GetContainers(ctx)
+	dclient, _ := NewDockerClient("")
+	containers, err := dclient.GetContainers(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -932,7 +935,7 @@ func NewDockerClient(name string) (*dockerClient, error) {
 	}
 	return &dockerClient{
 		cli:     cli,
-		workers: workers.New(1),
+		workers: workers.New(10),
 		labels:  initLabels(name),
 	}, nil
 }
