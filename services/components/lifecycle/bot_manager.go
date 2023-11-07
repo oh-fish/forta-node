@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/forta-network/forta-node/clients/docker"
@@ -183,6 +184,9 @@ func (blm *botLifecycleManager) CleanupUnusedBots(ctx context.Context) error {
 
 	for _, botContainer := range botContainers {
 		botContainerName := botContainer.Names[0][1:]
+		if config.ContainerNamePrefix != strings.Split(botContainerName, "-")[0] {
+			continue
+		}
 		_, ok := blm.findBotConfig(botContainerName)
 		if ok {
 			continue
