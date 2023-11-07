@@ -70,9 +70,9 @@ func (runner *Runner) Start() error {
 	//}
 	//log.Info("start-up check successful")
 
-	if err := runner.globalClient.Nuke(context.Background()); err != nil {
-		return fmt.Errorf("failed to nuke leftover containers at start: %v", err)
-	}
+	//if err := runner.globalClient.Nuke(context.Background()); err != nil {
+	//	return fmt.Errorf("failed to nuke leftover containers at start: %v", err)
+	//}
 
 	health.StartServer(runner.ctx, config.DefaultHealthPort, healthutils.DefaultHealthServerErrHandler, runner.CheckServiceHealth)
 
