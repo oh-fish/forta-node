@@ -350,7 +350,7 @@ func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*ty
 		return nil, err
 	}
 	for _, c := range containers {
-		log.Infof("[CONTAINERS-ELM] - %s", c.Names[0][1:])
+		fmt.Print(c.Names)
 		if c.Names[0][1:] == name {
 			return &c, nil
 		}
@@ -456,14 +456,15 @@ func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfi
 	// If we already have the container but it is not running, then just start it.
 	var foundContainer *types.Container
 	for _, c := range containers {
-		log.WithFields(log.Fields{
-			"image": config.Image,
-			"name":  config.Name,
-		}).Info("[CONTAINERS-ELM] - [%s] - ", c.Names)
+
 		if len(c.Names) == 0 {
 			continue
 		}
 		foundName := GetContainerName(c) // remove / in the beginning
+		log.WithFields(log.Fields{
+			"image": config.Image,
+			"name":  config.Name,
+		}).Info("[CONTAINERS-ELM] - found name [%s] - ")
 		if foundName == config.Name {
 			foundContainer = &c
 			break
