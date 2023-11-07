@@ -45,6 +45,7 @@ type SupervisorService struct {
 
 	client       clients.DockerClient
 	globalClient clients.DockerClient
+	searchclient clients.DockerClient
 
 	botLifecycleConfig components.BotLifecycleConfig
 	botLifecycle       components.BotLifecycle
@@ -149,7 +150,8 @@ func (sup *SupervisorService) start() error {
 		return err
 	}
 
-	supervisorContainer, err := sup.globalClient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
+	//supervisorContainer, err := sup.globalClient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
+	supervisorContainer, err := sup.searchclient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
 	if err != nil {
 		log.Info(fmt.Sprintf("[REJJIE-DEBUG] - ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"))
 		return fmt.Errorf("failed to get the supervisor container: %v", err)
@@ -778,6 +780,11 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 		return nil, fmt.Errorf("failed to create the global docker client: %v", err)
 	}
 
+	searchClient, err := docker.NewDockerClient("")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create the search docker client: %v", err)
+	}
+
 	releaseClient, err := release.NewClient(cfg.Config.Registry.IPFS.GatewayURL, []string{cfg.Config.Registry.ReleaseDistributionUrl})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the release client: %v", err)
@@ -787,6 +794,7 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 		ctx:                ctx,
 		client:             dockerClient,
 		globalClient:       globalClient,
+		searchclient:       searchClient,
 		releaseClient:      releaseClient,
 		botLifecycleConfig: cfg.BotLifecycleConfig,
 		config:             cfg,
