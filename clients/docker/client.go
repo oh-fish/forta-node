@@ -521,10 +521,6 @@ func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfi
 
 		if foundName == config.Name {
 			foundContainer = &c
-			log.WithFields(log.Fields{
-				"image": config.Image,
-				"name":  config.Name,
-			}).Info(fmt.Sprintf("[REJJIE-DEBUG] - foundName [%s] - config.name - [%s] - container - [%v]", foundName, config.Name, c))
 			break
 		}
 	}

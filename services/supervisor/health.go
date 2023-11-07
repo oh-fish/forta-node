@@ -2,6 +2,8 @@ package supervisor
 
 import (
 	"errors"
+	"github.com/forta-network/forta-node/config"
+	"strings"
 
 	"github.com/forta-network/forta-core-go/utils"
 	"github.com/forta-network/forta-node/clients/docker"
@@ -39,6 +41,12 @@ func (sup *SupervisorService) doHealthCheck() error {
 	defer sup.mu.RUnlock()
 	for _, knownContainer := range sup.containers {
 		var foundContainer *types.Container
+
+		knownContainerPrefix := strings.Split(knownContainer.Name, "-")[0]
+		if knownContainerPrefix != "forta" &&
+			knownContainerPrefix != config.ContainerNamePrefix {
+			continue
+		}
 
 		// this has a threshold so that the healthcheck doesn't fail while a container is starting
 		err := utils.TryTimes(func(attempt int) error {

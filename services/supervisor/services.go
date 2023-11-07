@@ -103,7 +103,7 @@ func (sup *SupervisorService) Start() error {
 		return err
 	}
 
-	//go sup.healthCheck()
+	go sup.healthCheck()
 	go sup.refreshBotContainers()
 
 	return nil
@@ -142,13 +142,13 @@ func (sup *SupervisorService) start() error {
 	sup.maxLogSize = sup.config.Config.Log.MaxLogSize
 	sup.maxLogFiles = sup.config.Config.Log.MaxLogFiles
 
-	if err := sup.removeOldContainers(); err != nil {
-		return err
-	}
+	//if err := sup.removeOldContainers(); err != nil {
+	//	return err
+	//}
 
-	if err := sup.ensureNodeImages(); err != nil {
-		return err
-	}
+	//if err := sup.ensureNodeImages(); err != nil {
+	//	return err
+	//}
 
 	//supervisorContainer, err := sup.globalClient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
 	supervisorContainer, err := sup.searchclient.GetContainerByName(sup.ctx, config.DockerSupervisorContainerName)
