@@ -361,15 +361,25 @@ func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*ty
 
 // GetContainerByName gets a container by using an ID lookup over all containers.
 func (d *dockerClient) GetContainerByID(ctx context.Context, id string) (*types.Container, error) {
-	containers, err := d.GetContainers(ctx)
+	//containers, err := d.GetContainers(ctx)
+	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
 	if err != nil {
-		return nil, err
+		log.Errorf("dclient generating error %v", err)
 	}
-	for _, c := range containers {
-		if c.ID == id {
-			return &c, nil
+	dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{})
+	for _, _c := range dxContainers {
+		if _c.ID == id {
+			return &_c, nil
 		}
 	}
+	//if err != nil {
+	//	return nil, err
+	//}
+	//for _, c := range containers {
+	//	if c. == id {
+	//		return &c, nil
+	//	}
+	//}
 	return nil, fmt.Errorf("%w with id '%s'", ErrContainerNotFound, id)
 }
 
