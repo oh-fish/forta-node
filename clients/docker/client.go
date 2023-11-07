@@ -347,13 +347,24 @@ func (d *dockerClient) GetFortaServiceContainers(ctx context.Context) (fortaCont
 
 // GetContainerByName gets a container by using a name lookup over all containers.
 func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*types.Container, error) {
-	containers, err := d.GetContainers(ctx)
+	//containers, err := d.GetContainers(ctx)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//for _, c := range containers {
+	//	if c.Names[0][1:] == name {
+	//		return &c, nil
+	//	}
+	//}
+
+	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
 	if err != nil {
-		return nil, err
+		log.Errorf("dclient generating error %v", err)
 	}
-	for _, c := range containers {
-		if c.Names[0][1:] == name {
-			return &c, nil
+	dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{})
+	for _, _c := range dxContainers {
+		if _c.Names[0][1:] == name {
+			return &_c, nil
 		}
 	}
 	return nil, fmt.Errorf("%w with name '%s'", ErrContainerNotFound, name)
