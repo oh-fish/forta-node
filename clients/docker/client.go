@@ -442,6 +442,18 @@ func (d *dockerClient) StartContainerWithID(ctx context.Context, containerID str
 	return d.cli.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
 }
 
+func (d *dockerClient) TransContainer(ctx context.Context, c types.Container, config ContainerConfig) (*Container, error) {
+	inspection, err := d.cli.ContainerInspect(ctx, c.ID)
+	if err != nil {
+		return nil, err
+	}
+	log.WithFields(log.Fields{
+		"id":   c.ID,
+		"name": config.Name,
+	}).Info("container is starting")
+	return &Container{Name: config.Name, ID: c.ID, Config: config, ImageHash: inspection.Image}, nil
+}
+
 // StartContainer kicks off a container as a daemon and returns a summary of the container
 func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfig) (*Container, error) {
 	log.WithFields(log.Fields{

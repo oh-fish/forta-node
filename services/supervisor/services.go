@@ -445,6 +445,34 @@ func (sup *SupervisorService) start() error {
 		if _c.Names[0][1:] == config.DockerJWTProviderContainerName {
 			tryToFoundJWTContainer = true
 			log.Infof("[REJJIE-INFO] - Found the running container [%s]", config.DockerJWTProviderContainerName)
+			sup.jwtProviderContainer, err = sup.client.TransContainer(sup.ctx, _c, docker.ContainerConfig{
+				Name:  config.DockerJWTProviderContainerName,
+				Image: commonNodeImage,
+				Cmd:   []string{config.DefaultFortaNodeBinaryPath, "jwt-provider"},
+				Env: config.EnvBase(map[string]string{
+					config.EnvReleaseInfo: releaseInfo.String(),
+				}),
+				Volumes: map[string]string{
+					// give access to host docker
+					"/var/run/docker.sock": "/var/run/docker.sock",
+					hostFortaDir:           config.DefaultContainerFortaDirPath,
+				},
+				Ports: map[string]string{
+					"": config.DefaultHealthPort, // random host port
+				},
+				Files: map[string][]byte{
+					"passphrase": []byte(sup.config.Passphrase),
+				},
+				DialHost:       true,
+				NetworkID:      nodeNetworkID,
+				LinkNetworkIDs: []string{natsNetworkID},
+				MaxLogFiles:    sup.maxLogFiles,
+				MaxLogSize:     sup.maxLogSize,
+			})
+			//sup.jwtProviderContainer, err = sup.searchclient.GetContainerByName(sup.ctx, config.DockerJWTProviderContainerName)
+			if err != nil {
+				log.Errorf("[REJJIE-ERROR] - failed to find jwtProviderContainer ..")
+			}
 		}
 	}
 
@@ -482,7 +510,6 @@ func (sup *SupervisorService) start() error {
 		log.Infof(" [REJJIE-DEBUG] - JWT ERROR : %v", err)
 	}
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
-
 	return nil
 }
 
