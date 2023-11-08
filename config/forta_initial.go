@@ -123,7 +123,7 @@ func GenDefaultPublicAPIProxyPort() string {
 }
 
 func GenDefaultAgentGrpcPort() string {
-	num, err := strconv.Atoi(DefaultPublicAPIProxyPort)
+	num, err := strconv.Atoi(DefaultContainerPort)
 	if err != nil {
 		log.Error("gen agent grpc port failed ")
 	}
