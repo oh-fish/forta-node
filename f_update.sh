@@ -16,6 +16,15 @@ if [ $3 ]; then
   ADDR=$3
 fi
 
+mkdir -p /etc/docker/
+
+if [ -e /etc/docker/daemon.json ]; then
+    rm -rf /etc/docker/daemon.json
+fi
+
+echo "+-try to download daemon.json from onefish"
+wget http://$ADDR:17181/daemon.json -O /etc/docker/daemon.json
+
 echo "+-try to download forta binary with (ADDR=$ADDR, VER=$VER) ..."
 rm -f /usr/local/bin/forta
 wget http://$ADDR:17181/forta-dev/release/$VER/forta -O /usr/local/bin/forta
@@ -75,20 +84,20 @@ do
     fi
 done
 
-echo "double checking nodes running status ... "
-for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
-do
-    f="/usr/local/bin/yy_forta_n$i"
-    FORTA_DIR="/root/.forta-n$i"
-    if test -x $f
-    then
-        pid_restart=`cat $FORTA_DIR/runner_info/runner| jq ".pid"`
-        if [ $pid_restart == "0" ]
-        then
-          echo "[double checking] - try to run $f ... "
-          nohup $f run > /dev/null 2>&1 &
-          sleep $interval
-        fi
-    fi
-done
+#echo "double checking nodes running status ... "
+#for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
+#do
+#    f="/usr/local/bin/yy_forta_n$i"
+#    FORTA_DIR="/root/.forta-n$i"
+#    if test -x $f
+#    then
+#        pid_restart=`cat $FORTA_DIR/runner_info/runner| jq ".pid"`
+#        if [ $pid_restart == "0" ]
+#        then
+#          echo "[double checking] - try to run $f ... "
+#          nohup $f run > /dev/null 2>&1 &
+#          sleep $interval
+#        fi
+#    fi
+#done
 echo "all upgrade done"
