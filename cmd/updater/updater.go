@@ -5,10 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"path"
-	"time"
-
 	"github.com/forta-network/forta-core-go/clients/health"
 	"github.com/forta-network/forta-core-go/utils"
 	"github.com/forta-network/forta-node/config"
@@ -17,6 +13,8 @@ import (
 	"github.com/forta-network/forta-node/services/updater"
 	"github.com/forta-network/forta-node/store"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
+	"path"
 )
 
 type keyAddress struct {
@@ -81,27 +79,27 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 func summarizeReports(reports health.Reports) *health.Report {
 	summary := health.NewSummary()
 
-	checkedErr, ok := reports.NameContains("event.checked.error")
-	if !ok {
-		summary.Fail()
-		return summary.Finish()
-	}
-	if len(checkedErr.Details) > 0 {
-		summary.Addf("auto-updater is failing to check new versions with error '%s'", checkedErr.Details)
-		summary.Status(health.StatusFailing)
-	}
-
-	checkedTime, ok := reports.NameContains("event.checked.time")
-	if ok {
-		t, ok := checkedTime.Time()
-		if ok {
-			checkDelay := time.Since(*t)
-			if checkDelay > time.Minute*10 {
-				summary.Addf("and late for %d minutes", int64(checkDelay.Minutes()))
-				summary.Status(health.StatusFailing)
-			}
-		}
-	}
+	//checkedErr, ok := reports.NameContains("event.checked.error")
+	//if !ok {
+	//	summary.Fail()
+	//	return summary.Finish()
+	//}
+	//if len(checkedErr.Details) > 0 {
+	//	summary.Addf("auto-updater is failing to check new versions with error '%s'", checkedErr.Details)
+	//	summary.Status(health.StatusFailing)
+	//}
+	//
+	//checkedTime, ok := reports.NameContains("event.checked.time")
+	//if ok {
+	//	t, ok := checkedTime.Time()
+	//	if ok {
+	//		checkDelay := time.Since(*t)
+	//		if checkDelay > time.Minute*10 {
+	//			summary.Addf("and late for %d minutes", int64(checkDelay.Minutes()))
+	//			summary.Status(health.StatusFailing)
+	//		}
+	//	}
+	//}
 	summary.Punc(".")
 	return summary.Finish()
 }

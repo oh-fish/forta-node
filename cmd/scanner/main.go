@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math/big"
-	"strconv"
 	"strings"
 	"time"
 
@@ -365,87 +364,87 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 func summarizeReports(reports health.Reports) *health.Report {
 	summary := health.NewSummary()
 
-	agentsTotal, ok := reports.NameContains("agent-pool.agents.total")
-	var (
-		gotCount bool
-		count    int
-	)
-	var err error
-	if ok {
-		count, err = strconv.Atoi(agentsTotal.Details)
-		if err != nil {
-			summary.Addf("running %d agents", count)
-			gotCount = true
-		}
-	}
-
-	checkedTime, ok := reports.NameContains("registry.event.checked.time")
-	var checkedT *time.Time
-	if ok && len(checkedTime.Details) > 0 {
-		checkedT, _ = checkedTime.Time()
-	}
-	var checkedE string
-	checkedErr, ok := reports.NameContains("registry.event.checked.error")
-	if ok {
-		checkedE = checkedErr.Details
-	}
-	if gotCount && count == 0 {
-		if len(checkedE) > 0 {
-			summary.Addf("because failed to check the list with error '%s'", checkedE)
-			summary.Status(health.StatusFailing)
-		}
-		if checkedTime != nil {
-			checkDelay := time.Since(*checkedT)
-			if checkDelay > time.Minute*10 {
-				summary.Addf("and delayed for %d minutes", int64(checkDelay.Minutes()))
-				summary.Status(health.StatusFailing)
-			}
-		}
-	}
+	//agentsTotal, ok := reports.NameContains("agent-pool.agents.total")
+	//var (
+	//	gotCount bool
+	//	count    int
+	//)
+	//var err error
+	//if ok {
+	//	count, err = strconv.Atoi(agentsTotal.Details)
+	//	if err != nil {
+	//		summary.Addf("running %d agents", count)
+	//		gotCount = true
+	//	}
+	//}
+	//
+	//checkedTime, ok := reports.NameContains("registry.event.checked.time")
+	//var checkedT *time.Time
+	//if ok && len(checkedTime.Details) > 0 {
+	//	checkedT, _ = checkedTime.Time()
+	//}
+	//var checkedE string
+	//checkedErr, ok := reports.NameContains("registry.event.checked.error")
+	//if ok {
+	//	checkedE = checkedErr.Details
+	//}
+	//if gotCount && count == 0 {
+	//	if len(checkedE) > 0 {
+	//		summary.Addf("because failed to check the list with error '%s'", checkedE)
+	//		summary.Status(health.StatusFailing)
+	//	}
+	//	if checkedTime != nil {
+	//		checkDelay := time.Since(*checkedT)
+	//		if checkDelay > time.Minute*10 {
+	//			summary.Addf("and delayed for %d minutes", int64(checkDelay.Minutes()))
+	//			summary.Status(health.StatusFailing)
+	//		}
+	//	}
+	//}
 	summary.Punc(".")
 
-	lastBlock, ok := reports.NameContains("block-feed.last-block")
-	if ok && len(lastBlock.Details) > 0 {
-		summary.Addf("at block %s.", lastBlock.Details)
-	}
+	//lastBlock, ok := reports.NameContains("block-feed.last-block")
+	//if ok && len(lastBlock.Details) > 0 {
+	//	summary.Addf("at block %s.", lastBlock.Details)
+	//}
 
 	// report block request failures but ignore "not found"s because we hit them when we are
 	// asking for the latest block that is not just yet available
-	blockByNumberErr, ok := reports.NameContains("chain-json-rpc-client.request.block-by-number.error")
-	if ok && len(blockByNumberErr.Details) > 0 && !isNotFoundErr(blockByNumberErr.Details) {
-		summary.Addf("failing to get block with error '%s'", blockByNumberErr.Details)
-		summary.Status(health.StatusFailing)
-	}
-	blockByNumberTime, ok := reports.NameContains("chain-json-rpc-client.request.block-by-number.time")
-	if ok && len(blockByNumberTime.Details) > 0 {
-		t, ok := blockByNumberTime.Time()
-		if ok {
-			checkDelay := time.Since(*t)
-			if checkDelay > time.Minute*5 {
-				summary.Punc(",")
-				summary.Addf("lagging to get block by %d minutes.", int64(checkDelay.Minutes()))
-			}
-		}
-	}
+	//blockByNumberErr, ok := reports.NameContains("chain-json-rpc-client.request.block-by-number.error")
+	//if ok && len(blockByNumberErr.Details) > 0 && !isNotFoundErr(blockByNumberErr.Details) {
+	//	summary.Addf("failing to get block with error '%s'", blockByNumberErr.Details)
+	//	summary.Status(health.StatusFailing)
+	//}
+	//blockByNumberTime, ok := reports.NameContains("chain-json-rpc-client.request.block-by-number.time")
+	//if ok && len(blockByNumberTime.Details) > 0 {
+	//	t, ok := blockByNumberTime.Time()
+	//	if ok {
+	//		checkDelay := time.Since(*t)
+	//		if checkDelay > time.Minute*5 {
+	//			summary.Punc(",")
+	//			summary.Addf("lagging to get block by %d minutes.", int64(checkDelay.Minutes()))
+	//		}
+	//	}
+	//}
 	summary.Punc(".")
 
-	getTxReceiptErr, ok := reports.NameContains("chain-json-rpc-client.request.get-transaction-receipt.error")
-	if ok && len(getTxReceiptErr.Details) > 0 {
-		summary.Addf("failing to get transaction receipt with error '%s', this can slow down block processing.", getTxReceiptErr.Details)
-	}
+	//getTxReceiptErr, ok := reports.NameContains("chain-json-rpc-client.request.get-transaction-receipt.error")
+	//if ok && len(getTxReceiptErr.Details) > 0 {
+	//	summary.Addf("failing to get transaction receipt with error '%s', this can slow down block processing.", getTxReceiptErr.Details)
+	//}
 
-	traceBlockErr, ok := reports.NameContains("trace-json-rpc-client.request.trace-block.error")
-	if ok && len(traceBlockErr.Details) > 0 && !isNotFoundErr(traceBlockErr.Details) {
-		summary.Addf("trace api (trace_block) is failing with error '%s'.", traceBlockErr.Details)
-		summary.Status(health.StatusFailing)
-	}
+	//traceBlockErr, ok := reports.NameContains("trace-json-rpc-client.request.trace-block.error")
+	//if ok && len(traceBlockErr.Details) > 0 && !isNotFoundErr(traceBlockErr.Details) {
+	//	summary.Addf("trace api (trace_block) is failing with error '%s'.", traceBlockErr.Details)
+	//	summary.Status(health.StatusFailing)
+	//}
 	summary.Punc(".")
 
-	batchPublishErr, ok := reports.NameContains("publisher.event.batch-publish.error")
-	if ok && len(batchPublishErr.Details) > 0 {
-		summary.Addf("failed to publish the last batch with error '%s'", batchPublishErr.Details)
-		summary.Status(health.StatusFailing)
-	}
+	//batchPublishErr, ok := reports.NameContains("publisher.event.batch-publish.error")
+	//if ok && len(batchPublishErr.Details) > 0 {
+	//	summary.Addf("failed to publish the last batch with error '%s'", batchPublishErr.Details)
+	//	summary.Status(health.StatusFailing)
+	//}
 
 	summary.Punc(".")
 

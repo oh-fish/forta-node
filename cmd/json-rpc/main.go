@@ -37,10 +37,10 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 func summarizeReports(reports health.Reports) *health.Report {
 	summary := health.NewSummary()
 
-	apiErr, ok := reports.NameContains("service.json-rpc-proxy.api")
-	if ok && len(apiErr.Details) > 0 {
-		summary.Addf("last time the api failed with error '%s'.", apiErr.Details)
-	}
+	//apiErr, ok := reports.NameContains("service.json-rpc-proxy.api")
+	//if ok && len(apiErr.Details) > 0 {
+	//	summary.Addf("last time the api failed with error '%s'.", apiErr.Details)
+	//}
 
 	return summary.Finish()
 }

@@ -19,6 +19,8 @@ set -o pipefail
 
 docker container prune -f
 
+docker network prune -f
+
 echo "--cleaning existing image ..."
 img_num=`docker image ls |wc -l`
 if [ $img_num -gt 1 ];then

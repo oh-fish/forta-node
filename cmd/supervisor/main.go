@@ -3,8 +3,6 @@ package supervisor
 import (
 	"context"
 	"fmt"
-	"strconv"
-
 	"github.com/forta-network/forta-core-go/clients/health"
 	"github.com/forta-network/forta-core-go/security"
 	"github.com/forta-network/forta-core-go/utils"
@@ -59,23 +57,23 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 
 func summarizeReports(reports health.Reports) *health.Report {
 	summary := health.NewSummary()
-
-	containersManager, ok := reports.NameContains("containers.managed")
-	if ok {
-		count, _ := strconv.Atoi(containersManager.Details)
-		if count < config.DockerSupervisorManagedContainers {
-			summary.Addf("missing %d containers.", config.DockerSupervisorManagedContainers-count)
-			summary.Status(health.StatusFailing)
-		} else {
-			summary.Addf("all %d service containers are running.", config.DockerSupervisorManagedContainers)
-		}
-	}
-
-	telemetryErr, ok := reports.NameContains("telemetry-sync.error")
-	if ok && len(telemetryErr.Details) > 0 {
-		summary.Addf("telemetry sync is failing with error '%s' (non-critical).", telemetryErr.Details)
-		// do not change status - non critical
-	}
+	//
+	//containersManager, ok := reports.NameContains("containers.managed")
+	//if ok {
+	//	count, _ := strconv.Atoi(containersManager.Details)
+	//	if count < config.DockerSupervisorManagedContainers {
+	//		summary.Addf("missing %d containers.", config.DockerSupervisorManagedContainers-count)
+	//		summary.Status(health.StatusFailing)
+	//	} else {
+	//		summary.Addf("all %d service containers are running.", config.DockerSupervisorManagedContainers)
+	//	}
+	//}
+	//
+	//telemetryErr, ok := reports.NameContains("telemetry-sync.error")
+	//if ok && len(telemetryErr.Details) > 0 {
+	//	summary.Addf("telemetry sync is failing with error '%s' (non-critical).", telemetryErr.Details)
+	//	// do not change status - non critical
+	//}
 
 	return summary.Finish()
 }
