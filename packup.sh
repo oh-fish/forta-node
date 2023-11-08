@@ -59,4 +59,5 @@ cid=`docker image ls $NODE_IMAGE |grep forta-network/forta-node| awk '{print $3}
 docker save $cid -o $RELEASE_DIR/forta-node.tar
 cp -rf $PWD/forta $RELEASE_DIR/
 cp -rf $PWD/forta /usr/local/bin
+cp -rf f_update.sh /var/www/html/f_update.sh
 echo "--Done."

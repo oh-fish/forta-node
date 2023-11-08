@@ -117,5 +117,5 @@ func (ac AgentConfig) ContainerName() string {
 }
 
 func (ac AgentConfig) GrpcPort() string {
-	return GenDefaultAgentGrpcPort()
+	return AgentGrpcPort
 }

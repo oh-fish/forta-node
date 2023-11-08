@@ -87,7 +87,7 @@ do
         then
           echo "[double checking] - try to run $f ... "
           nohup $f run > /dev/null 2>&1 &
-          sleep 20
+          sleep $interval
         fi
     fi
 done
