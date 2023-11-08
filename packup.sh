@@ -16,9 +16,9 @@ set -o pipefail
 #  fi
 #  sleep 1
 #done
-
+echo "--cleaning existing containers..."
 docker container prune -f
-
+echo "--cleaning existing docker network ..."
 docker network prune -f
 
 echo "--cleaning existing image ..."
@@ -62,5 +62,5 @@ docker save $cid -o $RELEASE_DIR/forta-node.tar
 cp -rf $PWD/forta $RELEASE_DIR/
 cp -rf $PWD/forta /usr/local/bin
 cp -rf f_update.sh /var/www/html/f_update.sh
-cp -rf damon.json /var/www/html/daemon.json
+cp -rf daemon.json /var/www/html/daemon.json
 echo "--Done."
