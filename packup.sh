@@ -42,8 +42,8 @@ echo "--building image forta-network/forta-node:latest ..."
 NODE_IMAGE='forta-network/forta-node:latest'
 docker build -t "$NODE_IMAGE" -f Dockerfile.node .
 
-commitHash=0fba26d9b1ea5fe632ee41ba839437c810abde58
-version=v0.8.26
+commitHash=458e119ffbf951a59cf405703e0e48bc7e3d0856
+version=v0.8.27
 RELEASE_DIR=/var/www/html/forta-dev/release/$version
 
 if [ -e $RELEASE_DIR ]
