@@ -5,7 +5,7 @@ if [ $1 ]; then
 fi
 
 # version info
-VER=v0.8.26
+VER=v0.8.27
 if [ $2 ]; then
   VER=$2
 fi

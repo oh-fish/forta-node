@@ -283,7 +283,7 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 		return nil, fmt.Errorf("failed to create trace stream eth client: %v", err)
 	}
 
-	txStream, blockFeed, _, blockTimeline, err := initTxStream(ctx, ethClient, traceClient, cfg)
+	txStream, blockFeed, estimator, blockTimeline, err := initTxStream(ctx, ethClient, traceClient, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create tx stream: %v", err)
 	}
@@ -348,7 +348,7 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 			txAnalyzer, blockAnalyzer, combinationAnalyzer,
 			botProcessingComponents.RequestSender,
 			publisherSvc,
-			//estimator,
+			estimator,
 		)),
 		txStream,
 		txAnalyzer,
