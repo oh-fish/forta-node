@@ -134,8 +134,8 @@ func (bc *botClient) attachServiceContainers(ctx context.Context, botNetworkID s
 
 func (bc *botClient) getServiceContainerIDs(ctx context.Context) (ids []string, err error) {
 	for _, containerName := range getServiceContainerNames() {
-		//container, err := bc.client.GetContainerByName(ctx, containerName)
-		container, err := bc.searchClient.GetContainerByName(ctx, containerName)
+		container, err := bc.client.GetContainerByName(ctx, containerName)
+		//container, err := bc.searchClient.GetContainerByName(ctx, containerName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get service container ids: %v", err)
 		}

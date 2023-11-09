@@ -347,50 +347,40 @@ func (d *dockerClient) GetFortaServiceContainers(ctx context.Context) (fortaCont
 
 // GetContainerByName gets a container by using a name lookup over all containers.
 func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*types.Container, error) {
-	//containers, err := d.GetContainers(ctx)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//for _, c := range containers {
-	//	if c.Names[0][1:] == name {
-	//		return &c, nil
-	//	}
-	//}
-
-	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
+	containers, err := d.GetContainers(ctx)
 	if err != nil {
-		log.Errorf("dclient generating error %v", err)
+		return nil, err
 	}
-	dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{})
-	for _, _c := range dxContainers {
-		if _c.Names[0][1:] == name {
-			return &_c, nil
+	for _, c := range containers {
+		if c.Names[0][1:] == name {
+			return &c, nil
 		}
 	}
+
+	//dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
+	//if err != nil {
+	//	log.Errorf("dclient generating error %v", err)
+	//}
+	//dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{})
+	//for _, _c := range dxContainers {
+	//	if _c.Names[0][1:] == name {
+	//		return &_c, nil
+	//	}
+	//}
 	return nil, fmt.Errorf("%w with name '%s'", ErrContainerNotFound, name)
 }
 
 // GetContainerByName gets a container by using an ID lookup over all containers.
 func (d *dockerClient) GetContainerByID(ctx context.Context, id string) (*types.Container, error) {
-	//containers, err := d.GetContainers(ctx)
-	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
+	containers, err := d.GetContainers(ctx)
 	if err != nil {
-		log.Errorf("dclient generating error %v", err)
+		return nil, err
 	}
-	dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{})
-	for _, _c := range dxContainers {
-		if _c.ID == id {
-			return &_c, nil
+	for _, c := range containers {
+		if c.ID == id {
+			return &c, nil
 		}
 	}
-	//if err != nil {
-	//	return nil, err
-	//}
-	//for _, c := range containers {
-	//	if c. == id {
-	//		return &c, nil
-	//	}
-	//}
 	return nil, fmt.Errorf("%w with id '%s'", ErrContainerNotFound, id)
 }
 
