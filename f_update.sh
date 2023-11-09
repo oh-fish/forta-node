@@ -1,5 +1,4 @@
 # boot interval
-apt -y install  jq
 interval=120
 if [ $1 ]; then
   interval=$1
@@ -52,7 +51,7 @@ done
 
 docker ps |grep forta|awk '{print $1}'|xargs docker stop
 
-echo "+-try to prune all the conntainers ..."
+echo "+-try to prune all the containers ..."
 docker container prune --force
 
 
@@ -60,6 +59,8 @@ echo "+-try to remove the old image ..."
 docker image rm forta-network/forta-node:latest --force
 docker image prune --force
 
+echo "+-try to prune all the unused docker network"
+docker network prune --force
 
 echo "+-try to import new docker image ..."
 R=$(docker image load -i /var/www/html/forta-node.tar)

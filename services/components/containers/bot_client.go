@@ -78,7 +78,9 @@ func (bc *botClient) LaunchBot(ctx context.Context, botConfig config.AgentConfig
 	defer cancel()
 
 	// first make sure that the bot's bridge network exists
-	botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, botConfig.ContainerName())
+	var fortaAgentNetWorkName = "forta-agent"
+	//botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, botConfig.ContainerName())
+	botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, fortaAgentNetWorkName)
 	if err != nil {
 		return fmt.Errorf("error creating public network: %v", err)
 	}
