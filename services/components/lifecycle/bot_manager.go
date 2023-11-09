@@ -210,6 +210,10 @@ func (blm *botLifecycleManager) ExitInactiveBots(ctx context.Context) error {
 	inactiveCfgs := make([]config.AgentConfig, 0, len(inactiveBotIDs))
 	for _, inactiveBotID := range inactiveBotIDs {
 		botConfig, found := blm.findBotConfigByID(inactiveBotID)
+		containerName := botConfig.ContainerName()
+		if strings.Split(containerName, "-")[0] != config.ContainerNamePrefix {
+			continue
+		}
 		logger := log.WithField("bot", inactiveBotID)
 		if !found {
 			logger.Warn("could not find the config for inactive bot - skipping stop")
@@ -245,6 +249,10 @@ func (blm *botLifecycleManager) RestartExitedBots(ctx context.Context) error {
 		}
 
 		containerName := docker.GetContainerName(botContainer)
+		if strings.Split(containerName, "-")[0] != config.ContainerNamePrefix {
+			continue
+		}
+
 		logger := log.WithField("container", containerName)
 		restartedBotConfig, found := blm.findBotConfig(containerName)
 		if !found {
