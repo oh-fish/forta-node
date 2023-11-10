@@ -34,6 +34,9 @@ echo "+-try to update docker image ..."
 rm -f /var/www/html/forta-node.tar
 wget http://$ADDR:17181/forta-dev/release/$VER/forta-node.tar -O /var/www/html/forta-node.tar
 
+if [ ! -f /var/www/html/forta-nats.tar ]; then
+    wget http://$ADDR:17181/forta-nats.tar -O /var/www/html/forta-nats.tar
+fi
 
 echo "+-try to stop all the forta process ..."
 for i in `seq 0 60`; do
@@ -70,10 +73,18 @@ CID="${BASH_REMATCH[1]}"
 docker image tag $CID forta-network/forta-node:latest
 echo "|-Done with CID=$CID"
 
+echo "+-try to import new docker image ..."
+R=$(docker image load -i /var/www/html/forta-nats.tar)
+P='sha256:([^\n]{9,12})'
+[[ $R =~ $P ]]
+CID="${BASH_REMATCH[1]}"
+docker image tag $CID nats:2.3.2
+echo "|-Done with CID=$CID"
+
 
 # boot up all the nodes
 echo "+-try to boot up all nodes with interval=$interval ... "
-for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
+for i in 01 02 03 04 05 06 07 08 09 10 #11 12 13 14 15 16 17 18 19 20
 do
     f="/usr/local/bin/yy_forta_n$i"
     FORTA_DIR="/root/.forta-n$i"
