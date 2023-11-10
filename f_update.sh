@@ -65,7 +65,7 @@ docker image prune --force
 echo "+-try to prune all the unused docker network"
 docker network prune --force
 
-echo "+-try to import new docker image ..."
+echo "+-try to import [forta-network/forta-node:latest] docker image ..."
 R=$(docker image load -i /var/www/html/forta-node.tar)
 P='sha256:([^\n]{9,12})'
 [[ $R =~ $P ]]
@@ -73,7 +73,7 @@ CID="${BASH_REMATCH[1]}"
 docker image tag $CID forta-network/forta-node:latest
 echo "|-Done with CID=$CID"
 
-echo "+-try to import new docker image ..."
+echo "+-try to import [nats:2.3.2] docker image ..."
 R=$(docker image load -i /var/www/html/forta-nats.tar)
 P='sha256:([^\n]{9,12})'
 [[ $R =~ $P ]]
