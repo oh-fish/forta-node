@@ -105,11 +105,11 @@ func (ac AgentConfig) ContainerName() string {
 		return ac.ID
 	}
 	if ac.IsLocal {
-		return fmt.Sprintf("%s-agent-%s", ContainerNamePrefix, utils.ShortenString(ac.ID, 8))
+		return fmt.Sprintf("%s-agent-%s", "forta", utils.ShortenString(ac.ID, 8))
 	}
 	_, digest := utils.SplitImageRef(ac.Image)
 
-	parts := []string{ContainerNamePrefix, "agent", utils.ShortenString(ac.ID, 8), utils.ShortenString(digest, 4)}
+	parts := []string{"forta", "agent", utils.ShortenString(ac.ID, 8), utils.ShortenString(digest, 4)}
 	if ac.IsSharded() {
 		parts = append(parts, strconv.Itoa(int(ac.ShardConfig.ShardID))) // append the shard id at the end
 	}
@@ -117,5 +117,5 @@ func (ac AgentConfig) ContainerName() string {
 }
 
 func (ac AgentConfig) GrpcPort() string {
-	return GenDefaultAgentGrpcPort()
+	return AgentGrpcPort
 }
