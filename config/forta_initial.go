@@ -33,7 +33,7 @@ func InitFromEnv() {
 	DockerSupervisorContainerName = fmt.Sprintf("%s-supervisor", ContainerNamePrefix)
 	DockerNatsContainerName = fmt.Sprintf("%s-nats", "forta")
 	DockerIpfsContainerName = fmt.Sprintf("%s-ipfs", ContainerNamePrefix)
-	DockerScannerContainerName = fmt.Sprintf("%s-scanner", "forta")
+	DockerScannerContainerName = fmt.Sprintf("%s-scanner", ContainerNamePrefix)
 	DockerInspectorContainerName = fmt.Sprintf("%s-inspector", ContainerNamePrefix)
 	DockerJSONRPCProxyContainerName = fmt.Sprintf("%s-json-rpc", "forta")
 	DockerPublicAPIProxyContainerName = fmt.Sprintf("%s-public-api", "forta")
