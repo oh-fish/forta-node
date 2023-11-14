@@ -56,23 +56,30 @@ func (client *client) DialWithRetry(cfg config.AgentConfig) error {
 		conn *grpc.ClientConn
 		err  error
 	)
-	for i := 0; i < 2; i++ {
-		conn, err = grpc.Dial(
-			fmt.Sprintf("%s:%s", cfg.ContainerName(), cfg.GrpcPort()),
-			grpc.WithInsecure(),
-			grpc.WithBlock(),
-			grpc.WithTimeout(5*time.Second),
-			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(defaultAgentResponseMaxByteCount)),
-		)
-		if err == nil {
-			break
-		}
-		err = fmt.Errorf("failed to connect to agent '%s': %v", cfg.ContainerName(), err)
-		log.Debug(err)
-		time.Sleep(time.Second * 1)
-	}
+	//for i := 0; i < 2; i++ {
+	//	conn, err = grpc.Dial(
+	//		fmt.Sprintf("%s:%s", cfg.ContainerName(), cfg.GrpcPort()),
+	//		grpc.WithInsecure(),
+	//		grpc.WithBlock(),
+	//		grpc.WithTimeout(5*time.Second),
+	//		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(defaultAgentResponseMaxByteCount)),
+	//	)
+	//	if err == nil {
+	//		break
+	//	}
+	//	err = fmt.Errorf("failed to connect to agent '%s': %v", cfg.ContainerName(), err)
+	//	log.Debug(err)
+	//	time.Sleep(time.Second * 1)
+	//}
+	conn, err = grpc.Dial(
+		fmt.Sprintf("%s:%s", cfg.ContainerName(), cfg.GrpcPort()),
+		grpc.WithInsecure(),
+		grpc.WithBlock(),
+		grpc.WithTimeout(5*time.Second),
+		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(defaultAgentResponseMaxByteCount)),
+	)
 	if err != nil {
-		log.Error(err)
+		//log.Error(err)
 		return err
 	}
 	client.WithConn(conn)
