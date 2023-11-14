@@ -392,9 +392,9 @@ func validateInitializeResponse(response *protocol.InitializeResponse) error {
 // StartProcessing launches the goroutines to concurrently process incoming requests
 // from request channels.
 func (bot *botClient) StartProcessing() {
-	//go bot.processTransactions()
-	//go bot.processBlocks()
-	//go bot.processCombinationAlerts()
+	go bot.processTransactions()
+	go bot.processBlocks()
+	go bot.processCombinationAlerts()
 	go bot.processHealthChecks()
 }
 
