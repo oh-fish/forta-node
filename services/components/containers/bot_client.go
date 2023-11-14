@@ -78,8 +78,8 @@ func (bc *botClient) LaunchBot(ctx context.Context, botConfig config.AgentConfig
 	defer cancel()
 
 	// first make sure that the bot's bridge network exists
-	//botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, botConfig.ContainerName())
-	botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, config.DefaultFortaAgentNetWorkName)
+	botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, botConfig.ContainerName())
+	//botNetworkID, err := bc.client.EnsurePublicNetwork(ctx, config.DefaultFortaAgentNetWorkName)
 	if err != nil {
 		return fmt.Errorf("error creating public network: %v", err)
 	}
@@ -90,16 +90,8 @@ func (bc *botClient) LaunchBot(ctx context.Context, botConfig config.AgentConfig
 		// do not create a new container - we already have it
 
 	case errors.Is(err, docker.ErrContainerNotFound):
-		//log.Infof("[REJJIE-DEBUG] - GEN AGENT BOT - --XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 		// if the bot container doesn't exist, create and start the container
 		botContainerCfg := NewBotContainerConfig(botNetworkID, botConfig, bc.logConfig, bc.resourcesConfig)
-		//log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - INFO--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-		//log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [NAME]--[%s]", botContainerCfg.Name)
-		//log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [ENV]--[%s]", botContainerCfg.Env)
-		//log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [NETWORK_IDS]--[%s]", botContainerCfg.LinkNetworkIDs)
-		//log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - [PORTS]--[%s]", botContainerCfg.Ports)
-		//log.Infof("[REJJIE-DEBUG] - FROM func LaunchBot() GEN AGENT BOT - INFO--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-
 		_, err = bc.client.StartContainer(ctx, botContainerCfg)
 		if err != nil {
 			return fmt.Errorf("failed to start bot container: %v", err)
