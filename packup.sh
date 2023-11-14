@@ -16,6 +16,11 @@ set -o pipefail
 #  fi
 #  sleep 1
 #done
+FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20231106113111-7ec637713f66
+ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.1
+go mod edit -replace=${FORTA_CORE_GO_VERSION}=${ONEFISH_FORTA_CORE_GO_VERSION}
+go mod tidy
+
 echo "--cleaning existing containers..."
 docker container prune -f
 echo "--cleaning existing docker network ..."

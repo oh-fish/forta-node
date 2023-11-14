@@ -56,12 +56,12 @@ func (client *client) DialWithRetry(cfg config.AgentConfig) error {
 		conn *grpc.ClientConn
 		err  error
 	)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 2; i++ {
 		conn, err = grpc.Dial(
 			fmt.Sprintf("%s:%s", cfg.ContainerName(), cfg.GrpcPort()),
 			grpc.WithInsecure(),
 			grpc.WithBlock(),
-			grpc.WithTimeout(10*time.Second),
+			grpc.WithTimeout(5*time.Second),
 			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(defaultAgentResponseMaxByteCount)),
 		)
 		if err == nil {
@@ -69,7 +69,7 @@ func (client *client) DialWithRetry(cfg config.AgentConfig) error {
 		}
 		err = fmt.Errorf("failed to connect to agent '%s': %v", cfg.ContainerName(), err)
 		log.Debug(err)
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 1)
 	}
 	if err != nil {
 		log.Error(err)
