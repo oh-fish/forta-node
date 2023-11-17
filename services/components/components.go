@@ -107,15 +107,15 @@ func GetBotLifecycleComponents(ctx context.Context, botLifeConfig BotLifecycleCo
 		return BotLifecycle{}, fmt.Errorf("failed to create the bot docker client: %v", err)
 	}
 
-	searchclient, err := docker.NewDockerClient("")
-
-	if err != nil {
-		return BotLifecycle{}, fmt.Errorf("failed to create the search docker client: %v", err)
-	}
+	//searchclient, err := docker.NewDockerClient("")
+	//
+	//if err != nil {
+	//	return BotLifecycle{}, fmt.Errorf("failed to create the search docker client: %v", err)
+	//}
 
 	botClient := containers.NewBotClient(
 		botLifeConfig.Config.Log, botLifeConfig.Config.ResourcesConfig,
-		dockerClient, botImageClient, searchclient,
+		dockerClient, botImageClient,
 	)
 	lifecycleMetrics := metrics.NewLifecycleClient(botLifeConfig.MessageClient)
 	lifecycleMediator := mediator.New(botLifeConfig.MessageClient, lifecycleMetrics)

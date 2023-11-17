@@ -38,13 +38,12 @@ type botClient struct {
 	resourcesConfig config.ResourcesConfig
 	client          clients.DockerClient
 	botImageClient  clients.DockerClient
-	searchClient    clients.DockerClient
 }
 
 // NewBotClient creates a new bot client to manage bot containers.
 func NewBotClient(
 	logConfig config.LogConfig, resourcesConfig config.ResourcesConfig,
-	client clients.DockerClient, botImageClient clients.DockerClient, searchclient clients.DockerClient,
+	client clients.DockerClient, botImageClient clients.DockerClient,
 ) *botClient {
 	botImageClient.SetImagePullCooldown(ImagePullCooldownThreshold, ImagePullCooldownDuration)
 	return &botClient{
@@ -52,7 +51,6 @@ func NewBotClient(
 		resourcesConfig: resourcesConfig,
 		client:          client,
 		botImageClient:  botImageClient,
-		searchClient:    searchclient,
 	}
 }
 
