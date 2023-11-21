@@ -448,19 +448,19 @@ func summarizeReports(reports health.Reports) *health.Report {
 
 	summary.Punc(".")
 
-	// jsonRpcPerformance, ok := reports.NameContains("json-rpc-performance")
-	// if ok && jsonRpcPerformance.Status != health.StatusUnknown {
-	// 	summary.Addf("json-rpc performance is estimated as %s", jsonRpcPerformance.Details)
-	// }
+	jsonRpcPerformance, ok := reports.NameContains("json-rpc-performance")
+	if ok && jsonRpcPerformance.Status != health.StatusUnknown {
+		summary.Addf("scan api performance is estimated as %s (this is different from the SLA score).", jsonRpcPerformance.Details)
+	}
 
-	// summary.Punc(".")
+	summary.Punc(".")
 
-	// jsonRpcDelay, ok := reports.NameContains("json-rpc-delay")
-	// if ok && jsonRpcPerformance.Status != health.StatusUnknown {
-	// 	summary.Addf("the latest block was received %s after creation.", jsonRpcDelay.Details)
-	// }
+	jsonRpcDelay, ok := reports.NameContains("json-rpc-delay")
+	if ok && jsonRpcPerformance.Status != health.StatusUnknown {
+		summary.Addf("the latest block was received %s after creation.", jsonRpcDelay.Details)
+	}
 
-	// summary.Punc(".")
+	summary.Punc(".")
 
 	return summary.Finish()
 }
