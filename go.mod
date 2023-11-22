@@ -41,7 +41,7 @@ replace github.com/docker/docker => github.com/moby/moby v20.10.25+incompatible
 require (
 	github.com/docker/docker v1.6.2
 	github.com/docker/go-connections v0.4.0
-	github.com/forta-network/forta-core-go v0.0.0-20231120162934-84a1ca7b3529
+	github.com/forta-network/forta-core-go v0.0.0-20231106113111-7ec637713f66
 	github.com/prometheus/client_golang v1.14.0
 	github.com/prometheus/client_model v0.3.0
 	github.com/prometheus/common v0.39.0
@@ -294,4 +294,4 @@ require (
 	lukechampine.com/blake3 v1.1.7 // indirect
 )
 
-replace github.com/forta-network/forta-core-go v0.0.0-20231120162934-84a1ca7b3529 => github.com/oh-fish/forta-core-go v0.0.2
+replace github.com/forta-network/forta-core-go v0.0.0-20231106113111-7ec637713f66 => github.com/oh-fish/forta-core-go v0.0.2
