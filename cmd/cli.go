@@ -188,6 +188,9 @@ func init() {
 	cmdForta.AddCommand(cmdFortaAuthorize)
 	cmdFortaAuthorize.AddCommand(cmdFortaAuthorizePool)
 
+	cmdForta.AddCommand(cmdFortaPoolInfo)
+	cmdForta.AddCommand(cmdFortaChainInfo)
+
 	// Global (persistent) flags
 
 	cmdForta.PersistentFlags().String("dir", "", "Forta dir (default is $HOME/.forta) (overrides $FORTA_DIR)")
