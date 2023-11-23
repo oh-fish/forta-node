@@ -146,6 +146,18 @@ publishes alerts about them`,
 		Short: "generate a pool registration signature",
 		RunE:  withInitialized(withValidConfig(handleFortaAuthorizePool)),
 	}
+
+	cmdFortaPoolInfo = &cobra.Command{
+		Use:   "poolInfo",
+		Short: "show the node's pool",
+		RunE:  withInitialized(withInitialized(handleFortaPoolInfo)),
+	}
+
+	cmdFortaChainInfo = &cobra.Command{
+		Use:   "chainInfo",
+		Short: "show the node's chainId",
+		RunE:  withInitialized(withInitialized(handleFortaChainInfo)),
+	}
 )
 
 // Execute executes the root command.
