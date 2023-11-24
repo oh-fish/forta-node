@@ -46,8 +46,8 @@ type JsonRpcProxyConfig struct {
 
 type LogConfig struct {
 	Level       string `yaml:"level" json:"level" default:"info" `
-	MaxLogSize  string `yaml:"maxLogSize" json:"maxLogSize" default:"50m" `
-	MaxLogFiles int    `yaml:"maxLogFiles" json:"maxLogFiles" default:"10" `
+	MaxLogSize  string `yaml:"maxLogSize" json:"maxLogSize" default:"10m" `
+	MaxLogFiles int    `yaml:"maxLogFiles" json:"maxLogFiles" default:"3" `
 }
 
 type RegistryConfig struct {
@@ -185,7 +185,7 @@ type LocalShardedBot struct {
 type InspectionConfig struct {
 	BlockInterval     *int  `yaml:"blockInterval" json:"blockInterval"`
 	NetworkSavingMode bool  `yaml:"networkSavingMode" json:"networkSavingMode"`
-	InspectAtStartup  *bool `yaml:"inspectAtStartup" json:"inspectAtStartup" default:"true"`
+	InspectAtStartup  *bool `yaml:"inspectAtStartup" json:"inspectAtStartup" default:"false"`
 }
 
 type StorageConfig struct {
