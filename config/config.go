@@ -73,7 +73,7 @@ type BatchConfig struct {
 	SkipEmpty                    bool `yaml:"skipEmpty" json:"skipEmpty"`
 	IntervalSeconds              *int `yaml:"intervalSeconds" json:"intervalSeconds" default:"15"`
 	MetricsBucketIntervalSeconds *int `yaml:"metricsBucketIntervalSeconds" json:"metricsBucketIntervalSeconds" default:"60"`
-	MaxAlerts                    *int `yaml:"maxAlerts" json:"maxAlerts" default:"1000" `
+	MaxAlerts                    *int `yaml:"maxAlerts" json:"maxAlerts" default:"60" `
 }
 
 type PublisherConfig struct {
