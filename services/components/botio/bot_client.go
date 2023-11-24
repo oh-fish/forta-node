@@ -56,9 +56,9 @@ type BotClient interface {
 
 // Constants
 const (
-	DefaultBufferSize          = 2000
+	DefaultBufferSize          = 200
 	RequestTimeout             = 5 * time.Minute
-	MaxFindings                = 1000
+	MaxFindings                = 100
 	DefaultInitializeTimeout   = 5 * time.Minute
 	DefaultHealthCheckInterval = time.Second * 30
 )
