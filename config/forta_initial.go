@@ -11,14 +11,14 @@ import (
 // InitFromEnv Init the global vars from the environment settings
 func InitFromEnv() {
 	// check and override the default port config
-	//DefaultNatsPort = typeparser.EnvGetString("FORTA_NATS_PORT", DefaultNatsPort)
+	DefaultNatsPort = typeparser.EnvGetString("FORTA_NATS_PORT", DefaultNatsPort)
 	DefaultIPFSPort = typeparser.EnvGetString("FORTA_IPFS_PORT", DefaultIPFSPort)
 	DefaultContainerPort = typeparser.EnvGetString("FORTA_CONTAINER_PORT", DefaultContainerPort)
 	DefaultHealthPort = typeparser.EnvGetString("FORTA_HEALTH_PORT", DefaultHealthPort)
 	DefaultJSONRPCProxyPort = typeparser.EnvGetString("FORTA_JSON_RPC_PROXY_PORT", DefaultJSONRPCProxyPort)
-	//DefaultJWTProviderPort = typeparser.EnvGetString("FORTA_JWT_PROVIDER_PORT", DefaultJWTProviderPort)
+	DefaultJWTProviderPort = typeparser.EnvGetString("FORTA_JWT_PROVIDER_PORT", DefaultJWTProviderPort)
 
-	//DefaultPublicAPIProxyPort = GenDefaultPublicAPIProxyPort()
+	DefaultPublicAPIProxyPort = GenDefaultPublicAPIProxyPort()
 
 	DefaultFortaNodeBinaryPath = typeparser.EnvGetString("FORTA_NODE_BINARY_PATH", DefaultFortaNodeBinaryPath)
 
@@ -31,13 +31,13 @@ func InitFromEnv() {
 
 	DockerUpdaterContainerName = fmt.Sprintf("%s-updater", ContainerNamePrefix)
 	DockerSupervisorContainerName = fmt.Sprintf("%s-supervisor", ContainerNamePrefix)
-	DockerNatsContainerName = fmt.Sprintf("%s-nats", "forta")
+	DockerNatsContainerName = fmt.Sprintf("%s-nats", ContainerNamePrefix)
 	DockerIpfsContainerName = fmt.Sprintf("%s-ipfs", ContainerNamePrefix)
 	DockerScannerContainerName = fmt.Sprintf("%s-scanner", ContainerNamePrefix)
 	DockerInspectorContainerName = fmt.Sprintf("%s-inspector", ContainerNamePrefix)
 	DockerJSONRPCProxyContainerName = fmt.Sprintf("%s-json-rpc", ContainerNamePrefix)
-	DockerPublicAPIProxyContainerName = fmt.Sprintf("%s-public-api", "forta")
-	DockerJWTProviderContainerName = fmt.Sprintf("%s-jwt-provider", "forta")
+	DockerPublicAPIProxyContainerName = fmt.Sprintf("%s-public-api", ContainerNamePrefix)
+	DockerJWTProviderContainerName = fmt.Sprintf("%s-jwt-provider", ContainerNamePrefix)
 	DockerStorageContainerName = fmt.Sprintf("%s-storage", ContainerNamePrefix)
 
 	// dir path setting
@@ -71,25 +71,24 @@ func InitFromEnv() {
 
 func EnvBase(envs map[string]string) map[string]string {
 	base := map[string]string{
-		"FORTA_NATS_PORT":             DefaultNatsPort,
-		"FORTA_IPFS_PORT":             DefaultIPFSPort,
-		"FORTA_CONTAINER_PORT":        DefaultContainerPort,
-		"FORTA_HEALTH_PORT":           DefaultHealthPort,
-		"FORTA_JSON_RPC_PROXY_PORT":   DefaultJSONRPCProxyPort,
-		"FORTA_JWT_PROVIDER_PORT":     DefaultJWTProviderPort,
-		"FORTA_PUBLIC_API_PROXY_PORT": DefaultPublicAPIProxyPort,
-		"FORTA_NODE_BINARY_PATH":      DefaultFortaNodeBinaryPath,
+		"FORTA_NATS_PORT":        DefaultNatsPort,
+		"FORTA_IPFS_PORT":        DefaultIPFSPort,
+		"FORTA_CONTAINER_PORT":   DefaultContainerPort,
+		"FORTA_HEALTH_PORT":      DefaultHealthPort,
+		EnvJsonRpcHost:           DockerJSONRPCProxyContainerName,
+		EnvJsonRpcPort:           DefaultJSONRPCProxyPort,
+		EnvJWTProviderHost:       DockerJWTProviderContainerName,
+		EnvJWTProviderPort:       DefaultJWTProviderPort,
+		EnvPublicAPIProxyHost:    DockerPublicAPIProxyContainerName,
+		EnvPublicAPIProxyPort:    DefaultPublicAPIProxyPort,
+		"FORTA_NODE_BINARY_PATH": DefaultFortaNodeBinaryPath,
 
 		// check and override the default containers config
-		"CONTAINER_NAME_PREFIX":       ContainerNamePrefix,
-		"DOCKER_SUPERVISOR_IMAGE":     DockerSupervisorImage,
-		"DOCKER_UPDATER_IMAGE":        DockerUpdaterImage,
-		"DOCKER_CLIENT_NAME_PREFIX":   DockerClientNamePrefix,
-		"GLOBAL_DOCKER_CLIENT_NAME":   GlobalDockerClientName,
-		"FORTA_JWT_PROVIDER_HOST":     DockerJWTProviderContainerName,
-		"FORTA_PUBLIC_API_PROXY_HOST": DockerPublicAPIProxyContainerName,
-		"JSON_RPC_HOST":               DockerJSONRPCProxyContainerName,
-
+		"CONTAINER_NAME_PREFIX":     ContainerNamePrefix,
+		"DOCKER_SUPERVISOR_IMAGE":   DockerSupervisorImage,
+		"DOCKER_UPDATER_IMAGE":      DockerUpdaterImage,
+		"DOCKER_CLIENT_NAME_PREFIX": DockerClientNamePrefix,
+		"GLOBAL_DOCKER_CLIENT_NAME": GlobalDockerClientName,
 		// dir path setting
 		"CONTAINER_FORTA_DIR_PATH": DefaultContainerFortaDirPath,
 	}
@@ -113,7 +112,7 @@ func GenPrometheusPort() int {
 }
 
 func GenDefaultPublicAPIProxyPort() string {
-	num, err := strconv.Atoi(DefaultJWTProviderPort)
+	num, err := strconv.Atoi(DefaultContainerPort)
 	if err != nil {
 		log.Error("gen public api proxy port failed ")
 	}

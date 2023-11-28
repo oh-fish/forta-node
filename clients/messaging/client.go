@@ -2,13 +2,12 @@ package messaging
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/forta-network/forta-core-go/protocol"
 	"github.com/goccy/go-json"
 	"github.com/golang/protobuf/proto"
 	"github.com/nats-io/nats.go"
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 // Notification and client globals
