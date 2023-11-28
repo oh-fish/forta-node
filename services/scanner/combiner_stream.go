@@ -47,7 +47,7 @@ func (t *CombinerAlertStreamService) handleAlert(evt *domain.AlertEvent) error {
 
 	log.WithFields(
 		log.Fields{
-			"subscribee":     evt.Event.Alert.Source.Bot.Id,
+			"subscribe":      evt.Event.Alert.Source.Bot.Id,
 			"alert":          evt.Event.Alert.Hash,
 			"sourceBot":      evt.Subscriber.BotID,
 			"sourceOwner":    evt.Subscriber.BotOwner,
