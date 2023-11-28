@@ -1,9 +1,4 @@
 # boot interval
-pid=`ps -ef|grep f_update|grep -v grep|awk '{print $2}'`
-if [ -n "${pid}" ];then
-  kill ${pid}
-fi
-
 interval=120
 if [ $1 ]; then
   interval=$1
