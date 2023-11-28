@@ -160,7 +160,6 @@ func (sup *SupervisorService) start() error {
 	// start of service network and container launch
 	startTime := time.Now()
 
-	log.Infof("[REJJIE-INFO] - ensuring public network")
 	nodeNetworkID, err := sup.client.EnsurePublicNetwork(sup.ctx, config.DockerNetworkName)
 	if err != nil {
 		return err
@@ -169,8 +168,7 @@ func (sup *SupervisorService) start() error {
 		return fmt.Errorf("failed to attach supervisor container to node network: %v", err)
 	}
 
-	log.Infof("[REJJIE-INFO] - ensuring nats network")
-	natsNetworkID, err := sup.client.EnsureInternalNetwork(sup.ctx, config.DockerNatsContainerName)
+	natsNetworkID, err := sup.client.EnsureInternalNetwork(sup.ctx, config.DefaultFortaNatsNetWorkName)
 	if err != nil {
 		return err
 	}
@@ -251,10 +249,10 @@ func (sup *SupervisorService) start() error {
 		return fmt.Errorf("failed to get bot lifecycle components: %v", err)
 	}
 
-	shouldDisableAgentLogs := sup.config.Config.AgentLogsConfig.Disable || sup.config.Config.LocalModeConfig.Enable
-	if !shouldDisableAgentLogs {
-		go sup.syncAgentLogs()
-	}
+	//shouldDisableAgentLogs := sup.config.Config.AgentLogsConfig.Disable || sup.config.Config.LocalModeConfig.Enable
+	//if !shouldDisableAgentLogs {
+	//	go sup.syncAgentLogs()
+	//}
 
 	sup.registerMessageHandlers()
 
@@ -726,7 +724,6 @@ func (sup *SupervisorService) Health() health.Reports {
 
 	containersStatus := health.StatusOK
 	if len(sup.containers) < config.DockerSupervisorManagedContainers {
-		log.Infof("[REJJIE-INFO] - [containers: %d] - 6", len(sup.containers))
 		containersStatus = health.StatusFailing
 	}
 

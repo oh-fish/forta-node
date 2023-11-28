@@ -16,4 +16,5 @@ var (
 	DefaultJSONRPCProxyPort      = "8545"
 	DefaultFortaNodeBinaryPath   = "/forta-node" // the path for the common binary in the container image
 	DefaultFortaAgentNetWorkName = "forta-agent"
+	DefaultFortaNatsNetWorkName  = "forta-nats"
 )
