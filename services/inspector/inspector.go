@@ -187,6 +187,7 @@ func (ins *Inspector) handleScannerBlock(payload messaging.ScannerPayload) error
 			log.Fields{
 				"triggeredAtBlock":  payload.LatestBlockInput,
 				"inspectingAtBlock": inspectionBlockNum,
+				"ins":               fmt.Sprintf("%s-%s", config.ContainerNamePrefix, ins.Name()),
 			},
 		)
 		logger.Info("triggering inspection")
