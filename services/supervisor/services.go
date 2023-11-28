@@ -103,7 +103,7 @@ func (sup *SupervisorService) Start() error {
 		return err
 	}
 
-	go sup.healthCheck()
+	//go sup.healthCheck()
 	go sup.refreshBotContainers()
 
 	return nil
@@ -249,10 +249,10 @@ func (sup *SupervisorService) start() error {
 		return fmt.Errorf("failed to get bot lifecycle components: %v", err)
 	}
 
-	//shouldDisableAgentLogs := sup.config.Config.AgentLogsConfig.Disable || sup.config.Config.LocalModeConfig.Enable
-	//if !shouldDisableAgentLogs {
-	//	go sup.syncAgentLogs()
-	//}
+	shouldDisableAgentLogs := sup.config.Config.AgentLogsConfig.Disable || sup.config.Config.LocalModeConfig.Enable
+	if !shouldDisableAgentLogs {
+		go sup.syncAgentLogs()
+	}
 
 	sup.registerMessageHandlers()
 
@@ -617,18 +617,18 @@ func (sup *SupervisorService) syncTelemetryData() {
 		var err error
 		select {
 		case <-slowTicker.C:
-			err = sup.doSyncTelemetryDataToPublicHandler()
-			if err != nil {
-				log.WithError(err).Warn("telemetry sync failed (public handler)")
-			}
+			//err = sup.doSyncTelemetryDataToPublicHandler()
+			//if err != nil {
+			//	log.WithError(err).Warn("telemetry sync failed (public handler)")
+			//}
 			sup.lastTelemetryRequest.Set()
 			sup.lastTelemetryRequestError.Set(err)
 
 		case <-fastTicker.C:
-			err = sup.doSyncTelemetryDataToCustomHandler()
-			if err != nil {
-				log.WithError(err).Warn("telemetry sync failed (custom handler)")
-			}
+			//err = sup.doSyncTelemetryDataToCustomHandler()
+			//if err != nil {
+			//	log.WithError(err).Warn("telemetry sync failed (custom handler)")
+			//}
 			sup.lastCustomTelemetryRequest.Set()
 			sup.lastCustomTelemetryRequestError.Set(err)
 

@@ -21,13 +21,14 @@ const (
 func (sup *SupervisorService) syncAgentLogs() {
 	interval := time.Duration(sup.botLifecycleConfig.Config.AgentLogsConfig.SendIntervalSeconds) * time.Second
 	ticker := time.NewTicker(interval)
+	var err error
 	for range ticker.C {
-		err := sup.doSyncAgentLogs()
+		//err := sup.doSyncAgentLogs()
 		sup.lastAgentLogsRequest.Set()
 		sup.lastAgentLogsRequestError.Set(err)
-		if err != nil {
-			log.WithError(err).Warn("failed to sync agent logs")
-		}
+		//if err != nil {
+		//	log.WithError(err).Warn("failed to sync agent logs")
+		//}
 	}
 }
 
