@@ -21,7 +21,7 @@ var ErrCannotFindBotForIP = errors.New("cannot find bot for ip")
 
 type JWTProvider interface {
 	CreateJWTFromIP(ctx context.Context, ipAddress string, claims map[string]interface{}) (string, error)
-	SetScannerKeyDir(ctx context.Context, gatewayPrefix string, scannerKeyDir string) (string, error)
+	SetScannerKeyDir(ctx context.Context, gatewayPrefix string, key *keystore.Key) (string, error)
 	GetScannerMap(ctx context.Context) map[string]*keystore.Key
 }
 
@@ -81,11 +81,7 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 	return res, nil
 }
 
-func (p *jwtProvider) SetScannerKeyDir(ctx context.Context, gatewayPrefix string, scannerKeyDir string) (string, error) {
-	key, err := security.LoadKey(scannerKeyDir)
-	if err != nil {
-		return "", err
-	}
+func (p *jwtProvider) SetScannerKeyDir(ctx context.Context, gatewayPrefix string, key *keystore.Key) (string, error) {
 	p.fishMap[gatewayPrefix] = key
 	return key.Address.String(), nil
 }

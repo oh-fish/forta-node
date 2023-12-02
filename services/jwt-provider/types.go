@@ -7,7 +7,7 @@ type CreateJWTResponse struct {
 	Token string `json:"token"`
 }
 type RegisterScannerAddressMessage struct {
-	Claims map[string]string `json:"claims"`
+	Claims map[string]interface{} `json:"claims"`
 }
 type RegisterScannerAddressResponse struct {
 	Token string `json:"token"`

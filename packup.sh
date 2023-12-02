@@ -27,7 +27,7 @@ echo "--cleaning existing docker network ..."
 docker network prune -f
 
 echo "--cleaning existing image ..."
-img_num=`docker image ls |wc -l`
+img_num=`docker image ls|grep -v REPOSITORY|grep forta|awk '{print $3}'| wc -l`
 if [ $img_num -gt 1 ];then
     docker image ls|grep -v REPOSITORY|grep forta|awk '{print $3}'|xargs docker rmi
 fi

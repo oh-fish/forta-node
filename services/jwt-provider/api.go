@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/forta-network/forta-node/services/jwt-provider/provider"
 	"net"
 	"net/http"
@@ -139,9 +140,10 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 		return
 	}
 	logrus.WithField("api", "handleJwtRegisterRequest").Infof("from [%s] request ...", ipAddr)
-	scannerKeyDir, _ := msg.Claims["keyDir"]
-	gatewayPrefix, _ := msg.Claims["gatewayPrefix"]
-	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, scannerKeyDir)
+	//var key *keystore.Key
+	key, _ := msg.Claims["keystore"].(*keystore.Key)
+	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
+	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, key)
 	logrus.WithField("api", "handleJwtRegisterRequest").Infof("got scanner key - [%s]  ...", scannerKey)
 	resp, err := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})
 	for k, v := range j.provider.GetScannerMap(req.Context()) {
