@@ -842,14 +842,18 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 
 	//keyByte, _ := sup.config.Key.MarshalJSON()
 	key, _ := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, sup.config.Passphrase)
+	log.Infof("I GOT key - [%s]", key)
+
+	keyBytes, _ := sup.getKeyBytes(config.DefaultContainerKeyDirPath)
+
 	payload, err := json.Marshal(
 		jwt_provider.RegisterScannerAddressMessage{
 			Claims: map[string]interface{}{
 				//"keyDir":        config.DefaultContainerKeyDirPath,
 				"gatewayPrefix": gatewayPrefix,
 				"keystore":      key,
-				//"keystoreByte":  keyByte,
-				"passphrase": sup.config.Passphrase,
+				"keyBytes":      keyBytes,
+				"passphrase":    sup.config.Passphrase,
 			},
 		},
 	)
@@ -875,5 +879,21 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 			log.Infof("can't set scanner key to jwt, status code: %d, reason: %s ", resp.StatusCode, string(reason))
 		}
 	}
+}
 
+func (sup *SupervisorService) getKeyBytes(keysDirPath string) ([]byte, error) {
+	files, err := os.ReadDir(keysDirPath)
+	if err != nil {
+		return nil, err
+	}
+	//
+	//if len(files) != 1 {
+	//	return nil, errors.New("there must be only one key in key directory")
+	//}
+
+	keyBytes, err := os.ReadFile(path.Join(keysDirPath, files[0].Name()))
+	if err != nil {
+		return nil, err
+	}
+	return keyBytes, nil
 }
