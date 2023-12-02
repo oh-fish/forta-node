@@ -840,20 +840,11 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 	ipElms := strings.Split(gateway, ".")
 	ipElms = ipElms[:len(ipElms)-1]
 	gatewayPrefix := strings.Join(ipElms, ".")
-
-	key, _ := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, sup.config.Passphrase)
-	log.Infof("I GOT key - [%s]", key)
-
-	//keyBytes, _ := sup.getKeyBytes(config.DefaultContainerKeyDirPath)
-
 	payload, err := json.Marshal(
 		jwt_provider.RegisterScannerAddressMessage{
 			Claims: map[string]interface{}{
 				"keyDir":        fmt.Sprintf("/root%s", config.DefaultContainerKeyDirPath),
 				"gatewayPrefix": gatewayPrefix,
-				//"keystore":      key,
-				//"keyBytes":      keyBytes,
-				//"passphrase":    sup.config.Passphrase,
 			},
 		},
 	)
@@ -866,7 +857,7 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 			fmt.Sprintf("http://%s/forta", jwtProviderAddr), "application/json", bytes.NewReader(payload),
 		)
 		if err != nil {
-			log.Infof("failed to set scanner key dir for jwt api 2 ,retrying ...")
+			log.WithError(err).Error("failed to set scanner key dir for jwt api 2 ,retrying ...")
 		}
 		if err == nil {
 			break
@@ -874,9 +865,9 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 		if resp.StatusCode != http.StatusOK {
 			reason, err := io.ReadAll(resp.Body)
 			if err != nil {
-				log.Infof("failed to set scanner key dir for jwt api 3")
+				log.WithError(err).Error("failed to set scanner key dir for jwt api 3")
 			}
-			log.Infof("can't set scanner key to jwt, status code: %d, reason: %s ", resp.StatusCode, string(reason))
+			log.WithError(err).Error("can't set scanner key to jwt, status code: %d, reason: %s ", resp.StatusCode, string(reason))
 		}
 	}
 }

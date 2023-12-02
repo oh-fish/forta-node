@@ -131,14 +131,9 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 			logrus.WithField("api", "handleJwtRegisterRequest").Infof("[RequestBody] - [%s] - [%s]", k, v)
 		}
 	}
-
-	//keyBytes, _ := msg.Claims["keyBytes"].([]byte)
-	//passphrase, _ := msg.Claims["passphrase"].(string)
 	keyDir, _ := msg.Claims["keyDir"].(string)
-	//key, _ := security.LoadKeyFromBytes(keyBytes, passphrase)
 	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
 	key, _ := security.LoadKey(keyDir)
-	logrus.WithField("api", "handleJwtRegisterRequest").Infof("I Got scanner - [%s]", key)
 	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, key)
 
 	resp, _ := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})
