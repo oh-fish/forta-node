@@ -181,6 +181,14 @@ func (sup *SupervisorService) start() error {
 		return fmt.Errorf("failed to attach supervisor container to nats network: %v", err)
 	}
 
+	agentNetworkID, err := sup.client.EnsurePublicNetwork(sup.ctx, fmt.Sprintf("%s-agent", config.ContainerNamePrefix))
+	if err != nil {
+		return err
+	}
+	if err := sup.client.AttachNetwork(sup.ctx, supervisorContainer.ID, agentNetworkID); err != nil {
+		return fmt.Errorf("failed to attach supervisor container to agent network: %v", err)
+	}
+
 	manageIpfsDir(sup.config.Config)
 	if sup.config.Config.AdvancedConfig.IPFSExperiment {
 		ipfsContainer, err := sup.client.StartContainer(sup.ctx, docker.ContainerConfig{
@@ -468,7 +476,7 @@ func (sup *SupervisorService) start() error {
 		log.Infof(" [REJJIE-DEBUG] - JWT ERROR : %v", err)
 	}
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
-	setScannerKeyDirForJWTAPI()
+	sup.setScannerKeyDirForJWTAPI(sup.ctx, agentNetworkID)
 	return nil
 }
 
@@ -812,15 +820,25 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 	return sup, nil
 }
 
-func setScannerKeyDirForJWTAPI() {
+func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, networkID string) {
+	gateway, err := sup.client.GetNetworkGatewayByID(sup.ctx, networkID)
+	if err != nil {
+		log.WithError(err).Errorf("failed to get gateway by networkID")
+	}
+
 	jwtProviderAddr := fmt.Sprintf(
 		"%s:%s", "forta-jwt-provider", config.DefaultJWTProviderPort,
 	)
 
+	ipElms := strings.Split(gateway, ".")
+	ipElms = ipElms[:len(ipElms)-1]
+	gatewayPrefix := strings.Join(ipElms, ".")
+
 	payload, err := json.Marshal(
 		jwt_provider.RegisterScannerAddressMessage{
 			Claims: map[string]string{
-				"keyDir": config.DefaultContainerKeyDirPath,
+				"keyDir":        config.DefaultContainerKeyDirPath,
+				"gatewayPrefix": gatewayPrefix,
 			},
 		},
 	)

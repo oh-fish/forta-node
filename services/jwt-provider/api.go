@@ -127,7 +127,7 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 			return
 		}
 		for k, v := range msg.Claims {
-			logrus.WithField("REJJIE", "handleJwtRegisterRequest").Infof("[%s] -> [%s]", k, v)
+			logrus.WithField("api", "handleJwtRegisterRequest").Infof("[RequestBody] - [%s] - [%s]", k, v)
 		}
 	}
 
@@ -138,11 +138,14 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 		_, _ = fmt.Fprintf(w, "can't extract ip from request: %s", req.RemoteAddr)
 		return
 	}
+	logrus.WithField("api", "handleJwtRegisterRequest").Infof("from [%s] request ...", ipAddr)
 	scannerKeyDir, _ := msg.Claims["keyDir"]
-	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), ipAddr, scannerKeyDir)
+	gatewayPrefix, _ := msg.Claims["gatewayPrefix"]
+	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, scannerKeyDir)
+	logrus.WithField("api", "handleJwtRegisterRequest").Infof("got scanner key - [%s]  ...", scannerKey)
 	resp, err := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})
 	for k, v := range j.provider.GetScannerMap() {
-		logrus.WithField("REJJIE", "handleJwtRegisterRequest").Infof("[%s] -> [%s]", k, v.Address.String())
+		logrus.WithField("api", "handleJwtRegisterRequest").Infof("[%s] - [%s]", k, v.Address.String())
 	}
 	w.WriteHeader(http.StatusOK)
 	_, _ = fmt.Fprintf(w, "%s", resp)
@@ -160,7 +163,7 @@ func (j *JWTAPI) handleJwtRequest(w http.ResponseWriter, req *http.Request) {
 	}
 
 	ipAddr, _, err := net.SplitHostPort(req.RemoteAddr)
-	logrus.WithField("REJJIE", "HAHAHAHAH").Infof("from [%s] request ...", ipAddr)
+	logrus.WithField("api", "handleJwtRequest").Infof("from [%s] request ...", ipAddr)
 	if err != nil {
 		j.lastErr.Set(err)
 		w.WriteHeader(http.StatusUnauthorized)

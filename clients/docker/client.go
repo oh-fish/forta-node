@@ -220,6 +220,19 @@ func (d *dockerClient) EnsureInternalNetwork(ctx context.Context, name string) (
 	return d.createNetwork(ctx, name, true)
 }
 
+func (d *dockerClient) GetNetworkGatewayByID(ctx context.Context, id string) (string, error) {
+	networks, err := d.cli.NetworkList(ctx, types.NetworkListOptions{})
+	if err != nil {
+		return "", err
+	}
+	for _, network := range networks {
+		if network.ID == id {
+			return network.IPAM.Config[0].Gateway, nil
+		}
+	}
+	return "", fmt.Errorf("failed to get network gateway")
+}
+
 func (d *dockerClient) createNetwork(ctx context.Context, name string, internal bool) (string, error) {
 	// Reuse if network exists.
 	networks, err := d.cli.NetworkList(ctx, types.NetworkListOptions{})
