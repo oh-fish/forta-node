@@ -141,10 +141,27 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 	//}
 	//logrus.WithField("api", "handleJwtRegisterRequest").Infof("from [%s] request ...", ipAddr)
 	//var key *keystore.Key
+
+	k := new(*keystore.Key)
+	s, _ := msg.Claims["keystoreByte"].([]byte)
+	_ = (*k).UnmarshalJSON(s)
+	logrus.WithField("api", "handleJwtRegisterRequest").Infof("I got scanner key - [%s]  ...", (*k).Address.String())
+
+	//err := kkkk.UnmarshalJSON(s)
+
+	//k.Id := new()
+
+	//s, _ := msg.Claims["keystores"].([]byte)
+	//&keystore.Key
+
+	//*keystore.Key.UnmarshalJSON(s)
+	//keyJSON := new()
+	//err := json.Unmarshal(key, &keyJSON)
+	//if err != nil {
+	//}
 	key, _ := msg.Claims["keystore"].(*keystore.Key)
 	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
 	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, key)
-	//logrus.WithField("api", "handleJwtRegisterRequest").Infof("got scanner key - [%s]  ...", key)
 
 	resp, _ := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})
 

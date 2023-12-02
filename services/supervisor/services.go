@@ -846,6 +846,8 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 				//"keyDir":        config.DefaultContainerKeyDirPath,
 				"gatewayPrefix": gatewayPrefix,
 				"keystore":      sup.config.Key,
+				"keystoreByte":  sup.config.Key.MarshalJSON(),
+				"passphrase":    sup.config.Passphrase,
 			},
 		},
 	)
