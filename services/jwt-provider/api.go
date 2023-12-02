@@ -125,6 +125,9 @@ func (j *JWTAPI) handleJwtRequest(w http.ResponseWriter, req *http.Request) {
 			_, _ = fmt.Fprint(w, errBadCreateMessage)
 			return
 		}
+		for k, v := range msg.Claims {
+			logrus.WithField("REJJIE", "handleJwtRequest").Infof("[%s] -> [%s]", k, v)
+		}
 	}
 
 	ipAddr, _, err := net.SplitHostPort(req.RemoteAddr)

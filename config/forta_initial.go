@@ -16,7 +16,7 @@ func InitFromEnv() {
 	DefaultContainerPort = typeparser.EnvGetString("FORTA_CONTAINER_PORT", DefaultContainerPort)
 	DefaultHealthPort = typeparser.EnvGetString("FORTA_HEALTH_PORT", DefaultHealthPort)
 	DefaultJSONRPCProxyPort = typeparser.EnvGetString("FORTA_JSON_RPC_PROXY_PORT", DefaultJSONRPCProxyPort)
-	DefaultJWTProviderPort = typeparser.EnvGetString("FORTA_JWT_PROVIDER_PORT", DefaultJWTProviderPort)
+	//DefaultJWTProviderPort = typeparser.EnvGetString("FORTA_JWT_PROVIDER_PORT", DefaultJWTProviderPort)
 
 	DefaultPublicAPIProxyPort = GenDefaultPublicAPIProxyPort()
 
@@ -37,7 +37,7 @@ func InitFromEnv() {
 	DockerInspectorContainerName = fmt.Sprintf("%s-inspector", ContainerNamePrefix)
 	DockerJSONRPCProxyContainerName = fmt.Sprintf("%s-json-rpc", ContainerNamePrefix)
 	DockerPublicAPIProxyContainerName = fmt.Sprintf("%s-public-api", ContainerNamePrefix)
-	DockerJWTProviderContainerName = fmt.Sprintf("%s-jwt-provider", ContainerNamePrefix)
+	DockerJWTProviderContainerName = fmt.Sprintf("%s-jwt-provider", "forta")
 	DockerStorageContainerName = fmt.Sprintf("%s-storage", ContainerNamePrefix)
 
 	// dir path setting
