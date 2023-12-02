@@ -22,7 +22,7 @@ var ErrCannotFindBotForIP = errors.New("cannot find bot for ip")
 type JWTProvider interface {
 	CreateJWTFromIP(ctx context.Context, ipAddress string, claims map[string]interface{}) (string, error)
 	SetScannerKeyDir(ctx context.Context, gatewayPrefix string, scannerKeyDir string) (string, error)
-	GetScannerMap() map[string]*keystore.Key
+	GetScannerMap(ctx context.Context) map[string]*keystore.Key
 }
 
 type jwtProvider struct {
@@ -64,12 +64,15 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 		"agentId": bot,
 	})
 
-	ipElms := strings.Split(ipAddress, ".")
-	ipElms = ipElms[:len(ipElms)-1]
-	gatewayPrefix := strings.Join(ipElms, ".")
+	//ipElms := strings.Split(ipAddress, ".")
+	//ipElms = ipElms[:len(ipElms)-1]
+	//gatewayPrefix := strings.Join(ipElms, ".")
 
-	//res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
-	res, err := sec.CreateBotJWT(p.fishMap[gatewayPrefix], bot, claims, p.jwtCreatorFunc)
+	//res, err := sec.CreateBotJWT(p.fishMap[gatewayPrefix], bot, claims, p.jwtCreatorFunc)
+	for k, v := range p.GetScannerMap(ctx) {
+		log.WithField("api", "handleJwtRequest").Infof("[%s] - [%s]", k, v.Address.String())
+	}
+	res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
 	if err != nil {
 		logger.WithError(err).Error("error creating jwt")
 		return "", err
@@ -87,7 +90,7 @@ func (p *jwtProvider) SetScannerKeyDir(ctx context.Context, gatewayPrefix string
 	return key.Address.String(), nil
 }
 
-func (p *jwtProvider) GetScannerMap() map[string]*keystore.Key {
+func (p *jwtProvider) GetScannerMap(ctx context.Context) map[string]*keystore.Key {
 	return p.fishMap
 }
 
