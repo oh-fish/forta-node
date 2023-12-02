@@ -64,8 +64,8 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 		"agentId": bot,
 	})
 
-	//res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
-	res, err := sec.CreateBotJWT(p.fishMap[ipAddress], bot, claims, p.jwtCreatorFunc)
+	res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
+	//res, err := sec.CreateBotJWT(p.fishMap[ipAddress], bot, claims, p.jwtCreatorFunc)
 	if err != nil {
 		logger.WithError(err).Error("error creating jwt")
 		return "", err
