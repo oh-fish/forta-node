@@ -57,6 +57,7 @@ func (j *JWTAPI) StartWithContext(ctx context.Context) error {
 	// setup routes
 	r := mux.NewRouter()
 	r.HandleFunc("/create", j.handleJwtRequest).Methods(http.MethodPost)
+	r.HandleFunc("/forta", j.handleJwtRegisterRequest).Methods(http.MethodPost)
 
 	j.srv = &http.Server{
 		Addr:    addr,
@@ -116,8 +117,8 @@ func (j *JWTAPI) Health() health.Reports {
 	}
 }
 
-func (j *JWTAPI) handleJwtRequest(w http.ResponseWriter, req *http.Request) {
-	var msg CreateJWTMessage
+func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Request) {
+	var msg RegisterScannerAddressMessage
 	if req.Body != http.NoBody {
 		err := json.NewDecoder(req.Body).Decode(&msg)
 		if err != nil {
@@ -126,7 +127,35 @@ func (j *JWTAPI) handleJwtRequest(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		for k, v := range msg.Claims {
-			logrus.WithField("REJJIE", "handleJwtRequest").Infof("[%s] -> [%s]", k, v)
+			logrus.WithField("REJJIE", "handleJwtRegisterRequest").Infof("[%s] -> [%s]", k, v)
+		}
+	}
+
+	ipAddr, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		j.lastErr.Set(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = fmt.Fprintf(w, "can't extract ip from request: %s", req.RemoteAddr)
+		return
+	}
+	scannerKeyDir, _ := msg.Claims["keyDir"]
+	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), ipAddr, scannerKeyDir)
+	resp, err := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})
+	for k, v := range j.provider.GetScannerMap() {
+		logrus.WithField("REJJIE", "handleJwtRegisterRequest").Infof("[%s] -> [%s]", k, v.Address.String())
+	}
+	w.WriteHeader(http.StatusOK)
+	_, _ = fmt.Fprintf(w, "%s", resp)
+}
+
+func (j *JWTAPI) handleJwtRequest(w http.ResponseWriter, req *http.Request) {
+	var msg CreateJWTMessage
+	if req.Body != http.NoBody {
+		err := json.NewDecoder(req.Body).Decode(&msg)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprint(w, errBadCreateMessage)
+			return
 		}
 	}
 

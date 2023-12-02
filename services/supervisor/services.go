@@ -1,8 +1,13 @@
 package supervisor
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	jwt_provider "github.com/forta-network/forta-node/services/jwt-provider"
+	"io"
+	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -463,6 +468,7 @@ func (sup *SupervisorService) start() error {
 		log.Infof(" [REJJIE-DEBUG] - JWT ERROR : %v", err)
 	}
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
+	setScannerKeyDirForJWTAPI()
 	return nil
 }
 
@@ -804,4 +810,36 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 	sup.autoUpdatesDisabled.Set(strconv.FormatBool(cfg.Config.AutoUpdate.Disable))
 
 	return sup, nil
+}
+
+func setScannerKeyDirForJWTAPI() {
+	jwtProviderAddr := fmt.Sprintf(
+		"%s:%s", "forta-jwt-provider", config.DefaultJWTProviderPort,
+	)
+
+	payload, err := json.Marshal(
+		jwt_provider.RegisterScannerAddressMessage{
+			Claims: map[string]string{
+				"keyDir": config.DefaultContainerKeyDirPath,
+			},
+		},
+	)
+	if err != nil {
+		log.WithError(err).Infof("failed to set scanner key dir for jwt api 1")
+	}
+
+	resp, err := http.Post(
+		fmt.Sprintf("http://%s/forta", jwtProviderAddr), "application/json", bytes.NewReader(payload),
+	)
+	if err != nil {
+		log.WithError(err).Warn("failed to set scanner key dir for jwt api 2")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		reason, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.WithError(err).Infof("failed to set scanner key dir for jwt api 3")
+		}
+		log.WithError(err).Errorf("can't set scanner key to jwt, status code: %d, reason: %s ", resp.StatusCode, string(reason))
+	}
 }

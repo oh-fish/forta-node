@@ -21,6 +21,8 @@ var ErrCannotFindBotForIP = errors.New("cannot find bot for ip")
 
 type JWTProvider interface {
 	CreateJWTFromIP(ctx context.Context, ipAddress string, claims map[string]interface{}) (string, error)
+	SetScannerKeyDir(ctx context.Context, ipAddress string, scannerKeyDir string) (string, error)
+	GetScannerMap() map[string]*keystore.Key
 }
 
 type jwtProvider struct {
@@ -28,6 +30,7 @@ type jwtProvider struct {
 	key            *keystore.Key
 	dockerClient   clients.DockerClient
 	jwtCreatorFunc func(key *keystore.Key, claims map[string]interface{}) (string, error)
+	fishMap        map[string]*keystore.Key
 }
 
 func NewJWTProvider(cfg config.Config) (JWTProvider, error) {
@@ -44,6 +47,7 @@ func NewJWTProvider(cfg config.Config) (JWTProvider, error) {
 		key:            key,
 		dockerClient:   dc,
 		jwtCreatorFunc: security.CreateScannerJWT,
+		fishMap:        map[string]*keystore.Key{},
 	}, nil
 }
 
@@ -60,13 +64,27 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 		"agentId": bot,
 	})
 
-	res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
+	//res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
+	res, err := sec.CreateBotJWT(p.fishMap[ipAddress], bot, claims, p.jwtCreatorFunc)
 	if err != nil {
 		logger.WithError(err).Error("error creating jwt")
 		return "", err
 	}
 
 	return res, nil
+}
+
+func (p *jwtProvider) SetScannerKeyDir(ctx context.Context, ipAddress string, scannerKeyDir string) (string, error) {
+	key, err := security.LoadKey(scannerKeyDir)
+	if err != nil {
+		return "", err
+	}
+	p.fishMap[ipAddress] = key
+	return key.Address.String(), nil
+}
+
+func (p *jwtProvider) GetScannerMap() map[string]*keystore.Key {
+	return p.fishMap
 }
 
 // agentIDReverseLookup reverse lookup from ip to agent id.
