@@ -133,7 +133,8 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 	}
 	keyDir, _ := msg.Claims["keyDir"].(string)
 	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
-	key, _ := security.LoadKey(keyDir)
+	passphrase, _ := msg.Claims["passphrase"].(string)
+	key, _ := security.LoadKeyWithPassphrase(keyDir, passphrase)
 	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, key)
 
 	resp, _ := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})

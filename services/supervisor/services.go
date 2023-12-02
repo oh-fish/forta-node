@@ -845,6 +845,7 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 			Claims: map[string]interface{}{
 				"keyDir":        fmt.Sprintf("/root%s", config.DefaultContainerKeyDirPath),
 				"gatewayPrefix": gatewayPrefix,
+				"passphrase":    sup.config.Passphrase,
 			},
 		},
 	)
@@ -870,21 +871,4 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 			log.WithError(err).Error("can't set scanner key to jwt, status code: %d, reason: %s ", resp.StatusCode, string(reason))
 		}
 	}
-}
-
-func (sup *SupervisorService) getKeyBytes(keysDirPath string) ([]byte, error) {
-	files, err := os.ReadDir(keysDirPath)
-	if err != nil {
-		return nil, err
-	}
-	//
-	//if len(files) != 1 {
-	//	return nil, errors.New("there must be only one key in key directory")
-	//}
-
-	keyBytes, err := os.ReadFile(path.Join(keysDirPath, files[0].Name()))
-	if err != nil {
-		return nil, err
-	}
-	return keyBytes, nil
 }
