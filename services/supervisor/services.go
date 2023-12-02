@@ -856,9 +856,9 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 		resp, err := http.Post(
 			fmt.Sprintf("http://%s/forta", jwtProviderAddr), "application/json", bytes.NewReader(payload),
 		)
-		if err != nil {
-			log.WithError(err).Infof("failed to set scanner key dir for jwt api 2 ,retrying ...")
-		}
+		//if err != nil {
+		//	log.WithError(err).Infof("failed to set scanner key dir for jwt api 2 ,retrying ...")
+		//}
 		if err == nil {
 			break
 		}

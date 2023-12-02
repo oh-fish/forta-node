@@ -70,7 +70,7 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 
 	//res, err := sec.CreateBotJWT(p.fishMap[gatewayPrefix], bot, claims, p.jwtCreatorFunc)
 	for k, v := range p.GetScannerMap(ctx) {
-		log.WithField("api", "handleJwtRequest").Infof("[%s] - [%s]", k, v)
+		log.WithField("api", "handleJwtRequest").Infof("ScannerMap CacheElm - [%s] - [%s]", k, v.Address)
 	}
 	res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
 	if err != nil {
