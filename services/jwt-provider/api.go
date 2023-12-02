@@ -144,7 +144,7 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, scannerKeyDir)
 	logrus.WithField("api", "handleJwtRegisterRequest").Infof("got scanner key - [%s]  ...", scannerKey)
 	resp, err := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})
-	for k, v := range j.provider.GetScannerMap() {
+	for k, v := range j.provider.GetScannerMap(req.Context()) {
 		logrus.WithField("api", "handleJwtRegisterRequest").Infof("[%s] - [%s]", k, v.Address.String())
 	}
 	w.WriteHeader(http.StatusOK)
