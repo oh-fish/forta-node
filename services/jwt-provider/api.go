@@ -132,24 +132,13 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 		}
 	}
 
-	//ipAddr, _, err := net.SplitHostPort(req.RemoteAddr)
-	//if err != nil {
-	//	j.lastErr.Set(err)
-	//	w.WriteHeader(http.StatusUnauthorized)
-	//	_, _ = fmt.Fprintf(w, "can't extract ip from request: %s", req.RemoteAddr)
-	//	return
-	//}
-	//logrus.WithField("api", "handleJwtRegisterRequest").Infof("from [%s] request ...", ipAddr)
-	//var key *keystore.Key
-	//keyByte, _ := msg.Claims["keystoreByte"].([]byte)
+	//keyBytes, _ := msg.Claims["keyBytes"].([]byte)
 	//passphrase, _ := msg.Claims["passphrase"].(string)
-	//key, _ := security.LoadKeyFromBytes(keyByte, passphrase)
-	keyBytes, _ := msg.Claims["keyBytes"].([]byte)
-	passphrase, _ := msg.Claims["passphrase"].(string)
-	key, _ := security.LoadKeyFromBytes(keyBytes, passphrase)
-	//key, _ := msg.Claims["keystore"].(*keystore.Key)
-	logrus.WithField("api", "handleJwtRegisterRequest").Infof("I Got scanner - [%s]", key)
+	keyDir, _ := msg.Claims["keyDir"].(string)
+	//key, _ := security.LoadKeyFromBytes(keyBytes, passphrase)
 	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
+	key, _ := security.LoadKey(keyDir)
+	logrus.WithField("api", "handleJwtRegisterRequest").Infof("I Got scanner - [%s]", key)
 	scannerKey, _ := j.provider.SetScannerKeyDir(req.Context(), gatewayPrefix, key)
 
 	resp, _ := json.Marshal(RegisterScannerAddressResponse{Token: scannerKey})

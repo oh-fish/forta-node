@@ -458,6 +458,7 @@ func (sup *SupervisorService) start() error {
 			// give access to host docker
 			"/var/run/docker.sock": "/var/run/docker.sock",
 			hostFortaDir:           config.DefaultContainerFortaDirPath,
+			"/root":                "/root",
 		},
 		Ports: map[string]string{
 			"": config.DefaultHealthPort, // random host port
@@ -840,20 +841,19 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 	ipElms = ipElms[:len(ipElms)-1]
 	gatewayPrefix := strings.Join(ipElms, ".")
 
-	//keyByte, _ := sup.config.Key.MarshalJSON()
 	key, _ := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, sup.config.Passphrase)
 	log.Infof("I GOT key - [%s]", key)
 
-	keyBytes, _ := sup.getKeyBytes(config.DefaultContainerKeyDirPath)
+	//keyBytes, _ := sup.getKeyBytes(config.DefaultContainerKeyDirPath)
 
 	payload, err := json.Marshal(
 		jwt_provider.RegisterScannerAddressMessage{
 			Claims: map[string]interface{}{
-				//"keyDir":        config.DefaultContainerKeyDirPath,
+				"keyDir":        fmt.Sprintf("/root%s", config.DefaultContainerKeyDirPath),
 				"gatewayPrefix": gatewayPrefix,
-				"keystore":      key,
-				"keyBytes":      keyBytes,
-				"passphrase":    sup.config.Passphrase,
+				//"keystore":      key,
+				//"keyBytes":      keyBytes,
+				//"passphrase":    sup.config.Passphrase,
 			},
 		},
 	)
