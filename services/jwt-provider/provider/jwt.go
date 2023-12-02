@@ -83,7 +83,7 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 
 func (p *jwtProvider) SetScannerKeyDir(ctx context.Context, gatewayPrefix string, key *keystore.Key) (string, error) {
 	p.fishMap[gatewayPrefix] = key
-	return key.Address.String(), nil
+	return "", nil
 }
 
 func (p *jwtProvider) GetScannerMap(ctx context.Context) map[string]*keystore.Key {
