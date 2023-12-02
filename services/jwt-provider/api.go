@@ -160,6 +160,7 @@ func (j *JWTAPI) handleJwtRequest(w http.ResponseWriter, req *http.Request) {
 	}
 
 	ipAddr, _, err := net.SplitHostPort(req.RemoteAddr)
+	logrus.WithField("REJJIE", "HAHAHAHAH").Infof("from [%s] request ...", ipAddr)
 	if err != nil {
 		j.lastErr.Set(err)
 		w.WriteHeader(http.StatusUnauthorized)
