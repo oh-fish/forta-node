@@ -481,6 +481,7 @@ func (sup *SupervisorService) start() error {
 	}
 
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
+	time.Sleep(3 * time.Second)
 	sup.setScannerKeyDirForJWTAPI(sup.ctx, agentNetworkID)
 	return nil
 }
