@@ -840,13 +840,15 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 	ipElms = ipElms[:len(ipElms)-1]
 	gatewayPrefix := strings.Join(ipElms, ".")
 
+	keyByte, _ := sup.config.Key.MarshalJSON()
+
 	payload, err := json.Marshal(
 		jwt_provider.RegisterScannerAddressMessage{
 			Claims: map[string]interface{}{
 				//"keyDir":        config.DefaultContainerKeyDirPath,
 				"gatewayPrefix": gatewayPrefix,
 				"keystore":      sup.config.Key,
-				"keystoreByte":  sup.config.Key.MarshalJSON(),
+				"keystoreByte":  keyByte,
 				"passphrase":    sup.config.Passphrase,
 			},
 		},
