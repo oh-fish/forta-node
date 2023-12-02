@@ -475,6 +475,11 @@ func (sup *SupervisorService) start() error {
 	if err != nil {
 		log.Infof(" [REJJIE-DEBUG] - JWT ERROR : %v", err)
 	}
+
+	if err := sup.client.WaitContainerStart(sup.ctx, sup.jwtProviderContainer.ID); err != nil {
+		return fmt.Errorf("failed while waiting for jwt-provider to start: %v", err)
+	}
+
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
 	sup.setScannerKeyDirForJWTAPI(sup.ctx, agentNetworkID)
 	return nil
