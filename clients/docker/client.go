@@ -504,6 +504,7 @@ func (d *dockerClient) StartContainer(ctx context.Context, config ContainerConfi
 	log.WithFields(log.Fields{
 		"image": config.Image,
 		"name":  config.Name,
+		"env":   config.Env,
 	}).Info("StartContainer()")
 	containers, err := d.GetContainers(ctx)
 	if err != nil {
