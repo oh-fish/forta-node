@@ -47,7 +47,7 @@ func NewJWTProvider(cfg config.Config) (JWTProvider, error) {
 		key:            key,
 		dockerClient:   dc,
 		jwtCreatorFunc: security.CreateScannerJWT,
-		fishMap:        map[string]*keystore.Key{},
+		fishMap:        make(map[string]*keystore.Key, 16),
 	}, nil
 }
 
@@ -67,6 +67,7 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 	ipElms := strings.Split(ipAddress, ".")
 	ipElms = ipElms[:len(ipElms)-1]
 	gatewayPrefix := strings.Join(ipElms, ".")
+	log.WithField("api", "CreateJWTFromIP").Infof("touched cache - [%s] - [%s]", gatewayPrefix, p.fishMap[gatewayPrefix].Address.String())
 	res, err := sec.CreateBotJWT(p.fishMap[gatewayPrefix], bot, claims, p.jwtCreatorFunc)
 	//res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
 	if err != nil {
@@ -79,7 +80,7 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 
 func (p *jwtProvider) SetScannerKeyDir(ctx context.Context, gatewayPrefix string, key *keystore.Key) (string, error) {
 	p.fishMap[gatewayPrefix] = key
-	return "", nil
+	return key.Address.String(), nil
 }
 
 func (p *jwtProvider) GetScannerMap(ctx context.Context) map[string]*keystore.Key {
