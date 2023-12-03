@@ -16,7 +16,6 @@ import (
 	"github.com/forta-network/forta-node/config"
 	"github.com/forta-network/forta-node/healthutils"
 	"github.com/forta-network/forta-node/services"
-	"github.com/forta-network/forta-node/services/components/prometheus"
 	"github.com/forta-network/forta-node/store"
 	log "github.com/sirupsen/logrus"
 )
@@ -85,7 +84,7 @@ func (runner *Runner) Start() error {
 
 	go runner.keepContainersAlive()
 
-	prometheus.StartCollector(runner, nil, config.GenPrometheusPort())
+	//prometheus.StartCollector(runner, nil, config.GenPrometheusPort())
 
 	return nil
 }
