@@ -891,5 +891,9 @@ func (sup *SupervisorService) setScannerKeyDirForAPIS(ctx context.Context, netwo
 			}
 			log.WithError(err).Error("can't set scanner key to public api, status code: %d, reason: %s ", publicApiResp.StatusCode, string(reason))
 		}
+
+		if err == nil {
+			break
+		}
 	}
 }
