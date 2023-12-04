@@ -341,5 +341,6 @@ func newPublicAPIProxy(
 		msgClient:     msgClient,
 		Key:           key,
 		rateLimiter:   rateLimiter,
+		fishMap:       map[string]*keystore.Key{},
 	}, nil
 }
