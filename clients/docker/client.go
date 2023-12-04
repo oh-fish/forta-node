@@ -358,6 +358,17 @@ func (d *dockerClient) GetFortaServiceContainers(ctx context.Context) (fortaCont
 	return
 }
 
+func (d *dockerClient) GetAllContainers(ctx context.Context) (ContainerList, error) {
+	dcli, err := dclient.NewClientWithOpts(dclient.FromEnv)
+	if err != nil {
+		log.Errorf("dclient generating error %v", err)
+	}
+	dxContainers, _ := dcli.ContainerList(ctx, dxType.ContainerListOptions{
+		All: true,
+	})
+	return dxContainers, nil
+}
+
 // GetContainerByName gets a container by using a name lookup over all containers.
 func (d *dockerClient) GetContainerByName(ctx context.Context, name string) (*types.Container, error) {
 	//containers, err := d.GetContainers(ctx)
@@ -925,7 +936,7 @@ func (d *dockerClient) Events(ctx context.Context, since time.Time) (<-chan even
 }
 
 func (d *dockerClient) GetContainerFromRemoteAddr(ctx context.Context, hostPort string) (*types.Container, error) {
-	containers, err := d.GetContainers(ctx)
+	containers, err := d.GetAllContainers(ctx)
 	if err != nil {
 		return nil, err
 	}

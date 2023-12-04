@@ -23,6 +23,7 @@ type DockerClient interface {
 	RemoveNetworkByName(ctx context.Context, networkName string) error
 	GetNetworkGatewayByID(ctx context.Context, id string) (string, error)
 	GetContainers(ctx context.Context) (docker.ContainerList, error)
+	GetAllContainers(ctx context.Context) (docker.ContainerList, error)
 	GetContainersByLabel(ctx context.Context, name, value string) (docker.ContainerList, error)
 	GetFortaServiceContainers(ctx context.Context) (fortaContainers docker.ContainerList, err error)
 	GetContainerByName(ctx context.Context, name string) (*types.Container, error)
