@@ -483,7 +483,7 @@ func (sup *SupervisorService) start() error {
 
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
 	time.Sleep(3 * time.Second)
-	sup.setScannerKeyDirForJWTAPI(sup.ctx, agentNetworkID)
+	sup.setScannerKeyDirForAPIS(sup.ctx, agentNetworkID)
 	return nil
 }
 
@@ -827,7 +827,7 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 	return sup, nil
 }
 
-func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, networkID string) {
+func (sup *SupervisorService) setScannerKeyDirForAPIS(ctx context.Context, networkID string) {
 	gateway, err := sup.client.GetNetworkGatewayByID(sup.ctx, networkID)
 	if err != nil {
 		log.WithError(err).Errorf("failed to get gateway by networkID")
@@ -835,6 +835,10 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 
 	jwtProviderAddr := fmt.Sprintf(
 		"%s:%s", "forta-jwt-provider", config.DefaultJWTProviderPort,
+	)
+
+	publicApiAddr := fmt.Sprintf(
+		"%s:%s", "forta-public-api", config.DefaultPublicAPIProxyPort,
 	)
 
 	ipElms := strings.Split(gateway, ".")
@@ -854,21 +858,37 @@ func (sup *SupervisorService) setScannerKeyDirForJWTAPI(ctx context.Context, net
 	}
 
 	for i := 0; i < 5; i++ {
-		resp, err := http.Post(
+		// 1. Register scanner key to forta-jwt-provider
+		jwtResp, err := http.Post(
 			fmt.Sprintf("http://%s/forta", jwtProviderAddr), "application/json", bytes.NewReader(payload),
 		)
 		if err != nil {
 			log.WithError(err).Error("failed to set scanner key dir for jwt api 2 ,retrying ...")
 		}
-		if err == nil {
-			break
-		}
-		if resp.StatusCode != http.StatusOK {
-			reason, err := io.ReadAll(resp.Body)
+
+		if jwtResp.StatusCode != http.StatusOK {
+			reason, err := io.ReadAll(jwtResp.Body)
 			if err != nil {
 				log.WithError(err).Error("failed to set scanner key dir for jwt api 3")
 			}
-			log.WithError(err).Error("can't set scanner key to jwt, status code: %d, reason: %s ", resp.StatusCode, string(reason))
+			log.WithError(err).Error("can't set scanner key to jwt, status code: %d, reason: %s ", jwtResp.StatusCode, string(reason))
+		}
+
+		// 2. Register scanner key to forta-public-api
+		publicApiResp, err := http.Post(
+			fmt.Sprintf("http://%s/forta", publicApiAddr), "application/json", bytes.NewReader(payload),
+		)
+
+		if err != nil {
+			log.WithError(err).Error("failed to register key for public api ,retrying ...")
+		}
+
+		if publicApiResp.StatusCode != http.StatusOK {
+			reason, err := io.ReadAll(publicApiResp.Body)
+			if err != nil {
+				log.WithError(err).Error("failed to set scanner key dir for public api")
+			}
+			log.WithError(err).Error("can't set scanner key to public api, status code: %d, reason: %s ", publicApiResp.StatusCode, string(reason))
 		}
 	}
 }

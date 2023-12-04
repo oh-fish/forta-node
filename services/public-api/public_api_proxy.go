@@ -2,10 +2,14 @@ package public_api
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
@@ -48,6 +52,7 @@ type PublicAPIProxy struct {
 
 	lastErr       health.ErrorTracker
 	authenticator clients.IPAuthenticator
+	fishMap       map[string]*keystore.Key
 }
 
 func (p *PublicAPIProxy) newReverseProxy() http.Handler {
@@ -70,6 +75,32 @@ func (p *PublicAPIProxy) newReverseProxy() http.Handler {
 	}
 
 	return rp
+}
+
+func (p *PublicAPIProxy) tokenRegisterHandler(w http.ResponseWriter, req *http.Request) {
+	var msg RegisterScannerAddressMessage
+	if req.Body != http.NoBody {
+		err := json.NewDecoder(req.Body).Decode(&msg)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprint(w, "bad message")
+			return
+		}
+		for k, v := range msg.Claims {
+			logrus.WithField("api", "tokenRegisterHandler").Infof("[RequestBody] - [%s] - [%s]", k, v)
+		}
+	}
+	keyDir, _ := msg.Claims["keyDir"].(string)
+	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
+	passphrase, _ := msg.Claims["passphrase"].(string)
+	key, _ := security.LoadKeyWithPassphrase(keyDir, passphrase)
+	p.fishMap[gatewayPrefix] = key
+	//scannerKey, _ := SetScannerKeyDir(req.Context(), gatewayPrefix, key)
+
+	resp, _ := json.Marshal(RegisterScannerAddressResponse{Token: key.Address.String()})
+
+	w.WriteHeader(http.StatusOK)
+	_, _ = fmt.Fprintf(w, "%s", resp)
 }
 
 func (p *PublicAPIProxy) createPublicAPIProxyHandler() http.Handler {
@@ -173,7 +204,19 @@ func (p *PublicAPIProxy) setAuthBearer(r *http.Request) {
 
 	claims := map[string]interface{}{claimKeyBotOwner: botOwner}
 
-	jwtToken, err := sec.CreateBotJWT(p.Key, botID, claims, security.CreateScannerJWT)
+	ipAddr, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		log.WithField("api", "setAuthBearer").Infof("can't extract ip from request: %s", r.RemoteAddr)
+		return
+	}
+	ipElms := strings.Split(ipAddr, ".")
+	ipElms = ipElms[:len(ipElms)-1]
+	gatewayPrefix := strings.Join(ipElms, ".")
+
+	//jwtToken, err := sec.CreateBotJWT(p.Key, botID, claims, security.CreateScannerJWT)
+	jwtToken, err := sec.CreateBotJWT(p.fishMap[gatewayPrefix], botID, claims, security.CreateScannerJWT)
+	log.WithField("api", "setAuthBearer").Infof("touched cache - [%s] - [%s]", gatewayPrefix, p.fishMap[gatewayPrefix].Address.String())
+
 	if err != nil {
 		log.WithError(err).Warn("can't create bot jwt")
 		return
@@ -185,9 +228,14 @@ func (p *PublicAPIProxy) setAuthBearer(r *http.Request) {
 }
 
 func (p *PublicAPIProxy) Start() error {
+
+	r := mux.NewRouter()
+	r.Handle("", p.createPublicAPIProxyHandler())
+	r.HandleFunc("/forta", p.tokenRegisterHandler).Methods(http.MethodPost)
+
 	p.server = &http.Server{
 		Addr:    fmt.Sprintf(":%s", config.DefaultPublicAPIProxyPort),
-		Handler: p.createPublicAPIProxyHandler(),
+		Handler: r,
 	}
 
 	utils.GoListenAndServe(p.server)
