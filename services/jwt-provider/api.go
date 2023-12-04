@@ -127,9 +127,9 @@ func (j *JWTAPI) handleJwtRegisterRequest(w http.ResponseWriter, req *http.Reque
 			_, _ = fmt.Fprint(w, errBadCreateMessage)
 			return
 		}
-		for k, v := range msg.Claims {
-			logrus.WithField("api", "handleJwtRegisterRequest").Infof("[RequestBody] - [%s] - [%s]", k, v)
-		}
+		//for k, v := range msg.Claims {
+		//	logrus.WithField("api", "handleJwtRegisterRequest").Infof("[RequestBody] - [%s] - [%s]", k, v)
+		//}
 	}
 	keyDir, _ := msg.Claims["keyDir"].(string)
 	gatewayPrefix, _ := msg.Claims["gatewayPrefix"].(string)
