@@ -341,6 +341,7 @@ func (sup *SupervisorService) start() error {
 				// give access to host docker
 				"/var/run/docker.sock": "/var/run/docker.sock",
 				hostFortaDir:           config.DefaultContainerFortaDirPath,
+				"/root":                "/root",
 			},
 			Ports: map[string]string{
 				"": config.DefaultHealthPort, // random host port
