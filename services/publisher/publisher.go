@@ -43,8 +43,8 @@ import (
 
 const (
 	defaultInterval            = time.Second * 15
-	defaultBatchLimit          = 60
-	defaultBatchBufferSize     = 12
+	defaultBatchLimit          = 500
+	defaultBatchBufferSize     = 100
 	defaultBatchSendRetryTimes = 3
 	defaultBatchSendRetryDelay = time.Second * 3
 
