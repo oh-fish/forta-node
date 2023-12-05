@@ -40,9 +40,9 @@ type SendReceiveChannels struct {
 // MakeResultChannels makes the result channels and returns.
 func MakeResultChannels() SendReceiveChannels {
 	return SendReceiveChannels{
-		Tx:               make(chan *TxResult, 1),
-		Block:            make(chan *BlockResult, 1),
-		CombinationAlert: make(chan *CombinationAlertResult, 1),
+		Tx:               make(chan *TxResult),
+		Block:            make(chan *BlockResult),
+		CombinationAlert: make(chan *CombinationAlertResult),
 	}
 }
 
