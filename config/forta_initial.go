@@ -15,7 +15,7 @@ func InitFromEnv() {
 	DefaultIPFSPort = typeparser.EnvGetString("FORTA_IPFS_PORT", DefaultIPFSPort)
 	DefaultContainerPort = typeparser.EnvGetString("FORTA_CONTAINER_PORT", DefaultContainerPort)
 	DefaultHealthPort = typeparser.EnvGetString("FORTA_HEALTH_PORT", DefaultHealthPort)
-	DefaultJSONRPCProxyPort = typeparser.EnvGetString("FORTA_JSON_RPC_PROXY_PORT", DefaultJSONRPCProxyPort)
+	//DefaultJSONRPCProxyPort = typeparser.EnvGetString("FORTA_JSON_RPC_PROXY_PORT", DefaultJSONRPCProxyPort)
 	//DefaultJWTProviderPort = typeparser.EnvGetString("FORTA_JWT_PROVIDER_PORT", DefaultJWTProviderPort)
 
 	//DefaultPublicAPIProxyPort = GenDefaultPublicAPIProxyPort()
@@ -35,7 +35,7 @@ func InitFromEnv() {
 	DockerIpfsContainerName = fmt.Sprintf("%s-ipfs", ContainerNamePrefix)
 	DockerScannerContainerName = fmt.Sprintf("%s-scanner", ContainerNamePrefix)
 	DockerInspectorContainerName = fmt.Sprintf("%s-inspector", ContainerNamePrefix)
-	DockerJSONRPCProxyContainerName = fmt.Sprintf("%s-json-rpc", ContainerNamePrefix)
+	DockerJSONRPCProxyContainerName = fmt.Sprintf("%s-json-rpc", "forta")
 	DockerPublicAPIProxyContainerName = fmt.Sprintf("%s-public-api", "forta")
 	DockerJWTProviderContainerName = fmt.Sprintf("%s-jwt-provider", "forta")
 	DockerStorageContainerName = fmt.Sprintf("%s-storage", ContainerNamePrefix)
