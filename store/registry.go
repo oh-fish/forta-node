@@ -92,6 +92,7 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 		logger := log.WithField("botId", assignment.AgentID)
 
 		if assignment.AgentID == "0xa20699d82a7b3f3aef3a4e861efa46efb1ecbabac6d78a1d842f23c655fb0205" {
+			logger.Info(" IM HERE !!!!!!!!!!!------!!!!!-----IM HERE!!!!!")
 			continue
 		}
 
