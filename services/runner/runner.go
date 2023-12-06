@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"fmt"
+	"github.com/forta-network/forta-node/services/components/prometheus"
 	"strconv"
 	"strings"
 	"sync"
@@ -84,7 +85,7 @@ func (runner *Runner) Start() error {
 
 	go runner.keepContainersAlive()
 
-	//prometheus.StartCollector(runner, nil, config.GenPrometheusPort())
+	prometheus.StartCollector(runner, nil, config.GenPrometheusPort())
 
 	return nil
 }
