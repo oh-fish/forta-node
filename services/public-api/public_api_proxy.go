@@ -110,6 +110,7 @@ func (p *PublicAPIProxy) createPublicAPIProxyHandler() http.Handler {
 			AllowCredentials: true,
 		},
 	)
+	logrus.WithField("api", "createPublicAPIProxyHandler").Infof("[REJJIE-DEBUG]---- gogogo!!")
 	return p.authMiddleware(p.metricMiddleware(c.Handler(p.newReverseProxy())))
 }
 
@@ -228,6 +229,11 @@ func (p *PublicAPIProxy) setAuthBearer(r *http.Request) {
 }
 
 func (p *PublicAPIProxy) Start() error {
+
+	//&http.Server{
+	//		Addr:    fmt.Sprintf(":%s", config.DefaultPublicAPIProxyPort),
+	//		Handler: p.createPublicAPIProxyHandler(),
+	//	}
 
 	r := mux.NewRouter()
 	r.Handle("", p.createPublicAPIProxyHandler())

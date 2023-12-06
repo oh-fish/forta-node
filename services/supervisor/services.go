@@ -821,7 +821,7 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 		config:             cfg,
 		healthClient:       health.NewClient(),
 		sendAgentLogs:      agentlogs.NewClient(cfg.Config.AgentLogsConfig.URL).SendLogs,
-		inspectionCh:       make(chan *protocol.InspectionResults, 1),
+		inspectionCh:       make(chan *protocol.InspectionResults),
 	}
 	sup.autoUpdatesDisabled.Set(strconv.FormatBool(cfg.Config.AutoUpdate.Disable))
 
