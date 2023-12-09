@@ -17,4 +17,5 @@ var (
 	DefaultFortaNodeBinaryPath   = "/forta-node" // the path for the common binary in the container image
 	DefaultFortaAgentNetWorkName = "forta-agent"
 	DefaultFortaNatsNetWorkName  = "forta-nats"
+	DefaultRunnerProcName        = "runner"
 )

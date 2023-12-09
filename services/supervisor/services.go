@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	jwt_provider "github.com/forta-network/forta-node/services/jwt-provider"
+	"github.com/forta-network/forta-node/services/proc"
 	"io"
 	"net/http"
 	"os"
@@ -248,6 +249,14 @@ func (sup *SupervisorService) start() error {
 		return err
 	}
 	sup.addContainerUnsafe(natsContainer)
+	err = proc.WriteRunnerInfoForContainer(config.DockerNatsContainerName, &proc.RunnerInfo{
+		Pid:   "0",
+		Cid:   natsContainer.ID,
+		CName: natsContainer.Name,
+	})
+	if err != nil {
+		log.WithError(err).Errorf("failed to write nats proc info")
+	}
 
 	if err := sup.client.WaitContainerStart(sup.ctx, natsContainer.ID); err != nil {
 		return fmt.Errorf("failed while waiting for nats to start: %v", err)
@@ -330,6 +339,14 @@ func (sup *SupervisorService) start() error {
 		return err
 	}
 	sup.addContainerUnsafe(sup.jsonRpcContainer)
+	err = proc.WriteRunnerInfoForContainer(config.DockerJSONRPCProxyContainerName, &proc.RunnerInfo{
+		Pid:   "0",
+		Cid:   sup.jsonRpcContainer.ID,
+		CName: sup.jsonRpcContainer.Name,
+	})
+	if err != nil {
+		log.WithError(err).Errorf("failed to write json-rpc proc info")
+	}
 
 	sup.publicAPIContainer, err = sup.client.TransContainer(
 		sup.ctx, docker.ContainerConfig{
@@ -360,6 +377,14 @@ func (sup *SupervisorService) start() error {
 		return err
 	}
 	sup.addContainerUnsafe(sup.publicAPIContainer)
+	err = proc.WriteRunnerInfoForContainer(config.DockerPublicAPIProxyContainerName, &proc.RunnerInfo{
+		Pid:   "0",
+		Cid:   sup.publicAPIContainer.ID,
+		CName: sup.publicAPIContainer.Name,
+	})
+	if err != nil {
+		log.WithError(err).Errorf("failed to write public-api proc info")
+	}
 
 	shouldInspectAtStartup := *sup.config.Config.InspectionConfig.InspectAtStartup
 	if sup.config.Config.LocalModeConfig.Enable {
@@ -398,6 +423,14 @@ func (sup *SupervisorService) start() error {
 		return err
 	}
 	sup.addContainerUnsafe(sup.inspectorContainer)
+	err = proc.WriteRunnerInfoForContainer(config.DockerInspectorContainerName, &proc.RunnerInfo{
+		Pid:   "0",
+		Cid:   sup.inspectorContainer.ID,
+		CName: sup.inspectorContainer.Name,
+	})
+	if err != nil {
+		log.WithError(err).Errorf("failed to write inspector proc info")
+	}
 
 	if shouldInspectAtStartup {
 		if err := sup.client.WaitContainerStart(sup.ctx, sup.inspectorContainer.ID); err != nil {
@@ -446,6 +479,14 @@ func (sup *SupervisorService) start() error {
 		return err
 	}
 	sup.addContainerUnsafe(sup.scannerContainer)
+	err = proc.WriteRunnerInfoForContainer(config.DockerScannerContainerName, &proc.RunnerInfo{
+		Pid:   "0",
+		Cid:   sup.scannerContainer.ID,
+		CName: sup.scannerContainer.Name,
+	})
+	if err != nil {
+		log.WithError(err).Errorf("failed to write scanner proc info")
+	}
 
 	log.Infof("[REJJIE-INFO] - trying to get or create Container [%s]", config.DockerJWTProviderContainerName)
 	sup.jwtProviderContainer, err = sup.client.TransContainer(sup.ctx, docker.ContainerConfig{
@@ -483,6 +524,15 @@ func (sup *SupervisorService) start() error {
 	}
 
 	sup.addContainerUnsafe(sup.jwtProviderContainer)
+	err = proc.WriteRunnerInfoForContainer(config.DockerJWTProviderContainerName, &proc.RunnerInfo{
+		Pid:   "0",
+		Cid:   sup.jwtProviderContainer.ID,
+		CName: sup.jwtProviderContainer.Name,
+	})
+	if err != nil {
+		log.WithError(err).Errorf("failed to write jwt-provider proc info")
+	}
+
 	time.Sleep(3 * time.Second)
 	sup.setScannerKeyDirForAPIS(sup.ctx, agentNetworkID)
 	return nil
@@ -722,6 +772,10 @@ func (sup *SupervisorService) Stop() error {
 	}
 
 	for _, cnt := range sup.containers {
+		if cnt.Name == "forta-jwt-provider" ||
+			cnt.Name == "forta-public-api" {
+			continue
+		}
 		err := sup.client.InterruptContainer(ctx, cnt.Container.ID)
 		logger := log.WithFields(log.Fields{
 			"id": cnt.ID,

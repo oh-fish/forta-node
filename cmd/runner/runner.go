@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"fmt"
+	"github.com/forta-network/forta-node/services/proc"
 	"os"
 
 	"github.com/forta-network/forta-node/clients/docker"
@@ -45,6 +46,31 @@ func Run(cfg config.Config) {
 	logger := log.WithField("process", "runner")
 	logger.Info("starting")
 	defer logger.Info("exiting")
+	// get the forta dir
+	fortaDir := os.Getenv("FORTA_DIR")
+	if len(fortaDir) < 1 {
+		logger.Errorf("FORTA_DIR is empty")
+		return
+	}
+	if _, err := os.Stat(fortaDir); os.IsNotExist(err) {
+		logger.Errorf("FORTA_DIR `%s` not exists", fortaDir)
+		return
+	}
+
+	// mark 柒低个傻嘿进程既pid，方便我删柒佢
+	err := proc.WriteRunnerInfo(fortaDir, config.DefaultRunnerProcName, &proc.RunnerInfo{
+		Pid: fmt.Sprintf("%d", os.Getpid()),
+	})
+	if err != nil {
+		logger.WithError(err).Error("failed to process info")
+		return
+	}
+	defer func() {
+		err = proc.ClearRunnerInfo(fortaDir, config.DefaultRunnerProcName)
+		if err != nil {
+			logger.WithError(err).Error("failed to clear proc info")
+		}
+	}()
 
 	serviceList, err := initServices(ctx, cfg)
 	if err != nil {
