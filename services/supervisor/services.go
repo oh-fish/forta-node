@@ -535,6 +535,7 @@ func (sup *SupervisorService) start() error {
 
 	time.Sleep(3 * time.Second)
 	sup.setScannerKeyDirForAPIS(sup.ctx, agentNetworkID)
+	go sup.doKeepJsonRpcContainerAlive()
 	return nil
 }
 
@@ -880,6 +881,21 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 	sup.autoUpdatesDisabled.Set(strconv.FormatBool(cfg.Config.AutoUpdate.Disable))
 
 	return sup, nil
+}
+
+func (sup *SupervisorService) doKeepJsonRpcContainerAlive() {
+	ticker := time.NewTicker(time.Second * 10)
+	for {
+		select {
+		case <-ticker.C:
+			container, err := sup.client.GetContainerByID(sup.ctx, sup.jsonRpcContainer.ID)
+			if err == nil && container.State == "exited" {
+				sup.client.StartContainer(sup.ctx, sup.jsonRpcContainer.Config)
+			}
+		case <-sup.ctx.Done():
+			return
+		}
+	}
 }
 
 func (sup *SupervisorService) setScannerKeyDirForAPIS(ctx context.Context, networkID string) {
