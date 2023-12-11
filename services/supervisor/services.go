@@ -7,6 +7,7 @@ import (
 	"fmt"
 	jwt_provider "github.com/forta-network/forta-node/services/jwt-provider"
 	"github.com/forta-network/forta-node/services/proc"
+	"github.com/ipfs/go-cid"
 	"io"
 	"net/http"
 	"os"
@@ -30,7 +31,6 @@ import (
 	"github.com/forta-network/forta-node/services"
 	"github.com/forta-network/forta-node/services/components"
 	"github.com/forta-network/forta-node/services/components/containers"
-	"github.com/ipfs/go-cid"
 	log "github.com/sirupsen/logrus"
 )
 
