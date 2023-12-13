@@ -535,7 +535,7 @@ func (sup *SupervisorService) start() error {
 
 	time.Sleep(3 * time.Second)
 	sup.setScannerKeyDirForAPIS(sup.ctx, agentNetworkID)
-	go sup.doKeepJsonRpcContainerAlive()
+	go sup.doKeepContainersAlive()
 	return nil
 }
 
@@ -883,14 +883,24 @@ func NewSupervisorService(ctx context.Context, cfg SupervisorServiceConfig) (*Su
 	return sup, nil
 }
 
-func (sup *SupervisorService) doKeepJsonRpcContainerAlive() {
+func (sup *SupervisorService) doKeepContainersAlive() {
 	ticker := time.NewTicker(time.Second * 10)
 	for {
 		select {
 		case <-ticker.C:
-			container, err := sup.client.GetContainerByID(sup.ctx, sup.jsonRpcContainer.ID)
-			if err == nil && container.State == "exited" {
+			jsonRpcContainer, err := sup.client.GetContainerByID(sup.ctx, sup.jsonRpcContainer.ID)
+			if err == nil && jsonRpcContainer.State == "exited" {
 				sup.client.StartContainer(sup.ctx, sup.jsonRpcContainer.Config)
+			}
+
+			scannerContainer, err := sup.client.GetContainerByID(sup.ctx, sup.scannerContainer.ID)
+			if err == nil && scannerContainer.State == "exited" {
+				sup.client.StartContainer(sup.ctx, sup.scannerContainer.Config)
+			}
+
+			inspectorContainer, err := sup.client.GetContainerByID(sup.ctx, sup.inspectorContainer.ID)
+			if err == nil && inspectorContainer.State == "exited" {
+				sup.client.StartContainer(sup.ctx, sup.inspectorContainer.Config)
 			}
 		case <-sup.ctx.Done():
 			return
