@@ -90,7 +90,7 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 
 	for _, assignment := range assignments {
 		logger := log.WithField("botId", assignment.AgentID)
-
+		// https://app.forta.network/bot/XXX
 		// if already invalidated, remember it for next time
 		// block-botId-1: 0xa20699d82a7b3f3aef3a4e861efa46efb1ecbabac6d78a1d842f23c655fb0205
 		//  - stupid request page 404 handler error.
@@ -107,7 +107,16 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 			assignment.AgentID == "0xa53515a09b38933c89ceea3edc4fbb42614cd270b356d93d1eea25779f64eff1" ||
 			assignment.AgentID == "0x0b241032ca430d9c02eaa6a52d217bbff046f0d1b3f3d2aa928e42a97150ec91" ||
 			assignment.AgentID == "0x4c7e56a9a753e29ca92bd57dd593bdab0c03e762bdd04e2bc578cb82b842c1f3" ||
-			assignment.AgentID == "0x4616413fd08079e4ae853502632940ca74110e68d73321eafed156cc7475d9f2" {
+			assignment.AgentID == "0x4616413fd08079e4ae853502632940ca74110e68d73321eafed156cc7475d9f2" ||
+			assignment.AgentID == "0x1a69f5ec8ef436e4093f9ec4ce1a55252b7a9a2d2c386e3f950b79d164bc99e0" ||
+			assignment.AgentID == "0x3172685467b021a6e6b9b0080edbf26e98d37eecd1ac90e89a8fa73b26e04e51" ||
+			assignment.AgentID == "0x4616413fd08079e4ae853502632940ca74110e68d73321eafed156cc7475d9f2" ||
+			assignment.AgentID == "0xa66ad2bed104042c3606d5a75f13e51ddfa17c1344f40544f983cb25f748fb39" ||
+			assignment.AgentID == "0xc229915675d683a13e69ebc4a9ddd9f2b86712ed6cad8c33180811e03499aded" ||
+			assignment.AgentID == "0x13a144dad9a1b11307fa94845d835a34e772b2875401bdc78b8cf528b19927a4" ||
+			assignment.AgentID == "0x9839061a67e5e7fd5e11b70cc6493d95231a14c96915d7307f0337384865b39b" ||
+			assignment.AgentID == "0x715c40c11a3e24f3f21c3e2db1c109bba358ccfcbceada84ee1e0f4dba4410e7" ||
+			assignment.AgentID == "0xac82fb2a572c7c0d41dc19d24790db17148d1e00505596ebe421daf91c837799" {
 			invalidAssignments = append(invalidAssignments, assignment)
 			logger.Warn("invalid bot - skipping")
 			continue

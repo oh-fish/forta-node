@@ -67,7 +67,7 @@ func (p *jwtProvider) CreateJWTFromIP(ctx context.Context, ipAddress string, cla
 	ipElms := strings.Split(ipAddress, ".")
 	ipElms = ipElms[:len(ipElms)-1]
 	gatewayPrefix := strings.Join(ipElms, ".")
-	log.WithField("api", "CreateJWTFromIP").Infof("touched cache - [%s] - [%s]", gatewayPrefix, p.fishMap[gatewayPrefix].Address.String())
+	//log.WithField("api", "CreateJWTFromIP").Infof("touched cache - [%s] - [%s]", gatewayPrefix, p.fishMap[gatewayPrefix].Address.String())
 	res, err := sec.CreateBotJWT(p.fishMap[gatewayPrefix], bot, claims, p.jwtCreatorFunc)
 	//res, err := sec.CreateBotJWT(p.key, bot, claims, p.jwtCreatorFunc)
 	if err != nil {
