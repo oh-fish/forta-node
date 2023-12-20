@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"strconv"
 	"sync"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/forta-network/forta-core-go/utils"
 	"github.com/forta-network/forta-node/clients"
 	"github.com/forta-network/forta-node/clients/agentgrpc"
+	"github.com/forta-network/forta-node/clients/bothttp"
 	"github.com/forta-network/forta-node/clients/messaging"
 	"github.com/forta-network/forta-node/config"
 	"github.com/forta-network/forta-node/nodeutils"
@@ -87,6 +89,7 @@ type botClient struct {
 
 	dialer       agentgrpc.BotDialer
 	clientUnsafe agentgrpc.Client
+	clientV2     bothttp.Client
 
 	initialized     chan struct{}
 	initializedOnce sync.Once
@@ -133,6 +136,7 @@ func NewBotClient(
 	resultChannels botreq.SendOnlyChannels,
 ) *botClient {
 	botCtx, botCtxCancel := context.WithCancel(ctx)
+	healthCheckPortInt, _ := strconv.Atoi(config.DefaultBotHealthCheckPort)
 	return &botClient{
 		ctx:                 botCtx,
 		ctxCancel:           botCtxCancel,
@@ -146,6 +150,7 @@ func NewBotClient(
 		lifecycleMetrics:    lifecycleMetrics,
 		dialer:              botDialer,
 		initialized:         make(chan struct{}),
+		clientV2:            bothttp.NewClient(botCfg.ContainerName(), healthCheckPortInt),
 	}
 }
 
@@ -308,6 +313,12 @@ func (bot *botClient) initialize() {
 		"bot": botConfig.ID,
 	})
 
+	if bot.Config().ProtocolVersion >= 2 {
+		logger.Info("newer protocol version detected - skipping bot initialization")
+		bot.initSuccess(botConfig)
+		return
+	}
+
 	// publish start metric to track bot starts/restarts.
 	bot.lifecycleMetrics.ClientDial(botConfig)
 
@@ -392,10 +403,15 @@ func validateInitializeResponse(response *protocol.InitializeResponse) error {
 // StartProcessing launches the goroutines to concurrently process incoming requests
 // from request channels.
 func (bot *botClient) StartProcessing() {
+	go bot.processHealthChecks()
+
+	if bot.Config().ProtocolVersion >= 2 {
+		return
+	}
+
 	go bot.processTransactions()
 	go bot.processBlocks()
 	go bot.processCombinationAlerts()
-	go bot.processHealthChecks()
 }
 
 func processRequests[R any](
@@ -736,7 +752,12 @@ func (bot *botClient) doHealthCheck(ctx context.Context, lg *log.Entry) bool {
 
 	bot.lifecycleMetrics.HealthCheckAttempt(botConfig)
 
-	err := botClient.DoHealthCheck(ctx)
+	var err error
+	if botConfig.ProtocolVersion >= 2 {
+		err = bot.clientV2.Health(ctx)
+	} else {
+		err = botClient.DoHealthCheck(ctx)
+	}
 	if err != nil {
 		bot.lifecycleMetrics.HealthCheckError(err, botConfig)
 	} else {
@@ -794,6 +815,10 @@ func calculateResponseTime(startTime *time.Time) (timestamp string, latencyMs ui
 func (bot *botClient) ShouldProcessBlock(blockNumberHex string) bool {
 	botConfig := bot.Config()
 
+	if botConfig.ProtocolVersion >= 2 {
+		return false
+	}
+
 	blockNumber, _ := hexutil.DecodeUint64(blockNumberHex)
 	var isAtLeastStartBlock bool
 	if botConfig.StartBlock != nil {
@@ -826,6 +851,10 @@ func (bot *botClient) ShouldProcessAlert(event *protocol.AlertEvent) bool {
 	}
 
 	botConfig := bot.Config()
+
+	if botConfig.ProtocolVersion >= 2 {
+		return false
+	}
 
 	// handle sharding
 	alertCreatedAt, err := time.Parse(time.RFC3339Nano, event.Alert.CreatedAt)

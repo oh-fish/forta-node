@@ -15,23 +15,25 @@ const (
 )
 
 type AgentConfig struct {
-	ID           string  `yaml:"id" json:"id"`
-	Image        string  `yaml:"image" json:"image"`
-	Manifest     string  `yaml:"manifest" json:"manifest"`
-	IsLocal      bool    `yaml:"isLocal" json:"isLocal"`
-	IsStandalone bool    `yaml:"isStandalone" json:"isStandalone"`
-	StartBlock   *uint64 `yaml:"startBlock" json:"startBlock,omitempty"`
-	StopBlock    *uint64 `yaml:"stopBlock" json:"stopBlock,omitempty"`
-	Owner        string  `yaml:"owner" json:"owner"`
+	ID              string  `yaml:"id" json:"id"`
+	Image           string  `yaml:"image" json:"image"`
+	Manifest        string  `yaml:"manifest" json:"manifest"`
+	IsLocal         bool    `yaml:"isLocal" json:"isLocal"`
+	IsStandalone    bool    `yaml:"isStandalone" json:"isStandalone"`
+	StartBlock      *uint64 `yaml:"startBlock" json:"startBlock,omitempty"`
+	StopBlock       *uint64 `yaml:"stopBlock" json:"stopBlock,omitempty"`
+	Owner           string  `yaml:"owner" json:"owner"`
+	ProtocolVersion int     `yaml:"protocolVersion" json:"protocolVersion"`
 
 	ChainID     int
 	ShardConfig *ShardConfig
 }
 
 type ShardConfig struct {
-	ShardID uint `yaml:"shardId" json:"shardId"`
-	Shards  uint `yaml:"shards" json:"shards"`
-	Target  uint `yaml:"target" json:"target"`
+	ShardID uint  `yaml:"shardId" json:"shardId"`
+	Shards  uint  `yaml:"shards" json:"shards"`
+	Target  uint  `yaml:"target" json:"target"`
+	ChainID int64 `yaml:"chainId" json:"chainId"`
 }
 
 func (ac AgentConfig) ShardID() int32 {
@@ -110,8 +112,13 @@ func (ac AgentConfig) ContainerName() string {
 	_, digest := utils.SplitImageRef(ac.Image)
 
 	parts := []string{ContainerNamePrefix, "agent", utils.ShortenString(ac.ID, 8), utils.ShortenString(digest, 4)}
+
+	if ac.ProtocolVersion >= 2 {
+		parts = append(parts, "c"+strconv.Itoa(ac.ChainID)) // append the chain id
+	}
+
 	if ac.IsSharded() {
-		parts = append(parts, strconv.Itoa(int(ac.ShardConfig.ShardID))) // append the shard id at the end
+		parts = append(parts, "s"+strconv.Itoa(int(ac.ShardConfig.ShardID))) // append the shard id at the end
 	}
 	return strings.Join(parts, "-")
 }
