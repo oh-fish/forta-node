@@ -17,7 +17,7 @@ set -o pipefail
 #  sleep 1
 #done
 FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20231106113111-7ec637713f66
-ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.5
+ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.6
 go mod edit -replace=${FORTA_CORE_GO_VERSION}=${ONEFISH_FORTA_CORE_GO_VERSION}
 go mod tidy
 
@@ -49,8 +49,10 @@ docker build -t "$NODE_IMAGE" -f Dockerfile.node .
 
 #commitHash=83ec187ba03628cd245aac67974d830343ac707e
 #version=v0.8.28
-commitHash=41ebf86ac0b189de87ae7862dfbd4b72376e42cc
-version=v0.8.29
+#commitHash=41ebf86ac0b189de87ae7862dfbd4b72376e42cc
+#version=v0.8.29
+commitHash=6a94f1ca60672a59e715af28a874e26ac680b226
+version=v0.8.30
 RELEASE_DIR=/var/www/html/forta-dev/release/$version
 
 if [ -e $RELEASE_DIR ]
