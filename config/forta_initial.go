@@ -19,6 +19,7 @@ func InitFromEnv() {
 	//DefaultJWTProviderPort = typeparser.EnvGetString("FORTA_JWT_PROVIDER_PORT", DefaultJWTProviderPort)
 
 	//DefaultPublicAPIProxyPort = GenDefaultPublicAPIProxyPort()
+	DefaultBotHealthCheckPort = GenDefaultBotHealthCheckPort()
 
 	DefaultFortaNodeBinaryPath = typeparser.EnvGetString("FORTA_NODE_BINARY_PATH", DefaultFortaNodeBinaryPath)
 
@@ -131,5 +132,18 @@ func GenDefaultAgentGrpcPort() string {
 		log.Error("gen int agentPort failed")
 	}
 	port := agentPort - num
+	return strconv.Itoa(port)
+}
+
+func GenDefaultBotHealthCheckPort() string {
+	num, err := strconv.Atoi(DefaultContainerPort)
+	if err != nil {
+		log.Error("gen agent grpc port failed ")
+	}
+	//agentPort, err := strconv.Atoi(AgentGrpcPort)
+	//if err != nil {
+	//	log.Error("gen int agentPort failed")
+	//}
+	port := num + 102
 	return strconv.Itoa(port)
 }
