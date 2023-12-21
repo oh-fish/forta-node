@@ -20,22 +20,22 @@ mkdir -p /etc/docker/
 if [ -e /etc/docker/daemon.json ]; then
     rm -rf /etc/docker/daemon.json
 fi
-
+RESOURCE_PORT=14131
 echo "+-try to download daemon.json from onefish"
-wget http://$ADDR:17181/daemon.json -O /etc/docker/daemon.json
+wget http://$ADDR:$RESOURCE_PORT/daemon.json -O /etc/docker/daemon.json
 
 echo "+-try to download forta binary with (ADDR=$ADDR, VER=$VER) ..."
 rm -f /usr/local/bin/forta
-wget http://$ADDR:17181/forta-dev/release/$VER/forta -O /usr/local/bin/forta
+wget http://$ADDR:$RESOURCE_PORT/forta-dev/release/$VER/forta -O /usr/local/bin/forta
 chmod +x /usr/local/bin/forta
 
 
 echo "+-try to update docker image ..."
 rm -f /var/www/html/forta-node.tar
-wget http://$ADDR:17181/forta-dev/release/$VER/forta-node.tar -O /var/www/html/forta-node.tar
+wget http://$ADDR:$RESOURCE_PORT/forta-dev/release/$VER/forta-node.tar -O /var/www/html/forta-node.tar
 
 if [ ! -f /var/www/html/forta-nats.tar ]; then
-    wget http://$ADDR:17181/forta-nats.tar -O /var/www/html/forta-nats.tar
+    wget http://$ADDR:$RESOURCE_PORT/forta-nats.tar -O /var/www/html/forta-nats.tar
 fi
 
 echo "+-try to stop all the forta process ..."
