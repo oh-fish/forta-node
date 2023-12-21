@@ -185,7 +185,7 @@ type LocalShardedBot struct {
 type InspectionConfig struct {
 	BlockInterval     *int  `yaml:"blockInterval" json:"blockInterval"`
 	NetworkSavingMode bool  `yaml:"networkSavingMode" json:"networkSavingMode"`
-	InspectAtStartup  *bool `yaml:"inspectAtStartup" json:"inspectAtStartup" default:"false"`
+	InspectAtStartup  *bool `yaml:"inspectAtStartup" json:"inspectAtStartup" default:"true"`
 }
 
 type StorageConfig struct {
