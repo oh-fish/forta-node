@@ -118,7 +118,9 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 			assignment.AgentID == "0x9aaa5cd64000e8ba4fa2718a467b90055b70815d60351914cc1cbe89fe1c404c" ||
 			assignment.AgentID == "0x617c356a4ad4b755035ef8024a87d36d895ee3cb0864e7ce9b3cf694dd80c82a" ||
 			assignment.AgentID == "0x8badbf2ad65abc3df5b1d9cc388e419d9255ef999fb69aac6bf395646cf01c14" ||
-			assignment.AgentID == "0x1d646c4045189991fdfd24a66b192a294158b839a6ec121d740474bdacb3ab23" {
+			assignment.AgentID == "0x1d646c4045189991fdfd24a66b192a294158b839a6ec121d740474bdacb3ab23" ||
+			assignment.AgentID == "0xe8527df509859e531e58ba4154e9157eb6d9b2da202516a66ab120deabd3f9f6" ||
+			assignment.AgentID == "0xc608f1aff80657091ad14d974ea37607f6e7513fdb8afaa148b3bff5ba305c15" {
 			invalidAssignments = append(invalidAssignments, assignment)
 			logger.Warn("invalid bot - skipping")
 			continue
