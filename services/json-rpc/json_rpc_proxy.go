@@ -58,7 +58,7 @@ func (p *JsonRpcProxy) Start() error {
 	})
 
 	p.server = &http.Server{
-		Addr:    fmt.Sprintf(":%s", config.DefaultJSONRPCProxyPort),
+		Addr:    ":8545",
 		Handler: p.metricHandler(c.Handler(rp)),
 	}
 	utils.GoListenAndServe(p.server)
