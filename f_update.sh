@@ -38,6 +38,18 @@ if [ ! -f /var/www/html/forta-nats.tar ]; then
     wget http://$ADDR:$RESOURCE_PORT/forta-nats.tar -O /var/www/html/forta-nats.tar
 fi
 
+for i in 01 02 03 04 05 06 07 08 09 10
+do
+    FORTA_DIR="/root/.forta-n$i"
+    if [ -d $FORTA_DIR ];then
+        forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
+        if [ ! ${forta_pid//\"/} -eq 0 ];then
+            kill ${forta_pid//\"/}
+        fi
+    fi
+    sleep 1
+done
+
 echo "+-try to stop all the forta process ..."
 for i in `seq 0 60`; do
   pkill forta
@@ -96,20 +108,4 @@ do
     fi
 done
 
-#echo "double checking nodes running status ... "
-#for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
-#do
-#    f="/usr/local/bin/yy_forta_n$i"
-#    FORTA_DIR="/root/.forta-n$i"
-#    if test -x $f
-#    then
-#        pid_restart=`cat $FORTA_DIR/runner_info/runner| jq ".pid"`
-#        if [ $pid_restart == "0" ]
-#        then
-#          echo "[double checking] - try to run $f ... "
-#          nohup $f run > /dev/null 2>&1 &
-#          sleep $interval
-#        fi
-#    fi
-#done
 echo "all upgrade done"
