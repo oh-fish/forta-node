@@ -43,9 +43,11 @@ do
     FORTA_DIR="/root/.forta-n$i"
     if [ -d $FORTA_DIR ];then
         forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
+        echo "killing - [$FORTA_DIR] - pid - [${forta_pid//\"/}] ..."
         if [ ! ${forta_pid//\"/} -eq 0 ];then
             kill ${forta_pid//\"/}
         fi
+        echo "killed - [$FORTA_DIR] - pid - [${forta_pid//\"/}]"
     fi
     sleep 1
 done
