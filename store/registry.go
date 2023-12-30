@@ -127,7 +127,9 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 			assignment.AgentID == "0x9e1e98b397bcbe38e1604f03f36e91aeb1e9a2a719d5a68dc7ae327d2bf33ca8" ||
 			assignment.AgentID == "0xe27867c40008e0e3533d6dba7d3c1f26a61a3923bc016747d131f868f8f34555" ||
 			assignment.AgentID == "0x6b6e1323fe090551b7bb109d1c2a0089d66da08492f67117018d6ac0c3b1eed7" ||
-			assignment.AgentID == "0x33b852edb7c5de6e989db3ad682941ced5987a94a58c922d373ca58f51a06fb2" {
+			assignment.AgentID == "0x33b852edb7c5de6e989db3ad682941ced5987a94a58c922d373ca58f51a06fb2" ||
+			assignment.AgentID == "0xdd83ac89fbc5dd028b7c4a711d4f0c5b13412b171801b126cb5f79b916920cd2" ||
+			assignment.AgentID == "0x98b87a29ecb6c8c0f8e6ea83598817ec91e01c15d379f03c7ff781fd1141e502" {
 			continue
 		}
 		// https://app.forta.network/bot/XXX
