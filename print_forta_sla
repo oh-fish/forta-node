@@ -1,0 +1,13 @@
+#!/bin/bash
+hn=`hostname `
+for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
+do
+    f="/usr/local/bin/yy_forta_n$i"
+    FORTA_DIR="/root/.forta-n$i"
+    NODE_NAME=".forta-n$i"
+    if [ -d $FORTA_DIR ]; then
+        addr=`$f account address`
+        sla_score=`curl -s https://api.forta.network/stats/sla/scanner/$addr | jq ".statistics.avg"`
+        echo "$hn,$addr,[$NODE_NAME],$sla_score"
+    fi
+done

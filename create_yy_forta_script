@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# yy_forta_script adrea
+FORTA_CONTAINER_PORT=8089
+FORTA_HEALTH_PORT=8090
+FORTA_JWT_PROVIDER_PORT=8515
+FORTA_IPFS_PORT=5001
+FORTA_NODE_NAME=""
+FORTA_NODE_CONTAINER_PREFIX=""
+FORTA_IDX=0
+FORTA_PASSPHRASE="jinwen123456"
+FORTA_SCRIPT_DIR=/usr/local/bin
+
+create_yy_forta_script() {
+    if [ ! -f "$FORTA_SCRIPT_DIR/yy_forta_n01" ];then
+        last_script_idx=0
+    else
+        last_script_idx=`ls -l ${FORTA_SCRIPT_DIR}/yy_forta_n*|wc -l`
+    fi
+
+    start_idx=$(($last_script_idx + 1))
+    end_idx=$(($1 + $start_idx))
+    for ((i=$start_idx;i<$end_idx;i++)) do
+        echo $i
+        FORTA_IDX=$i
+        FORTA_CONTAINER_PORT=$((8089+100*$i))
+        FORTA_HEALTH_PORT=$((8090+100*$i))
+        FORTA_JWT_PROVIDER_PORT=$((8515+100*$i))
+        FORTA_IPFS_PORT=$((5001+100*$i))
+        if [ $i -lt 10 ];then
+            FORTA_NODE_NAME="forta-n0$i"
+            FORTA_NODE_CONTAINER_PREFIX="forta0$i"
+            FORTA_SCRIPT_FILE_NAME="yy_forta_n0$i"
+        else
+            FORTA_NODE_NAME="forta-n$i"
+            FORTA_NODE_CONTAINER_PREFIX="forta$i"
+            FORTA_SCRIPT_FILE_NAME="yy_forta_n$i"
+        fi
+
+        YY_FORTA_SCRIPT_TEMPLATE="""
+        #!/bin/bash\n
+        export FORTA_NATS_PORT=4222\n
+        export FORTA_JSON_RPC_PROXY_PORT=8545\n
+        \n
+        export FORTA_CONTAINER_PORT=$FORTA_CONTAINER_PORT\n
+        export FORTA_HEALTH_PORT=$FORTA_HEALTH_PORT\n
+        export FORTA_JWT_PROVIDER_PORT=$FORTA_JWT_PROVIDER_PORT\n
+        export FORTA_IPFS_PORT=$FORTA_IPFS_PORT\n
+        export FORTA_NODE_BINARY_PATH=/forta-node\n
+        export CONTAINER_NAME_PREFIX=$FORTA_NODE_CONTAINER_PREFIX\n
+        export DOCKER_CLIENT_NAME_PREFIX=\"n$FORTA_IDX\"\n
+        export GLOBAL_DOCKER_CLIENT_NAME=\"g$FORTA_IDX\"\n
+        export FORTA_DIR=~/.$FORTA_NODE_NAME\n
+        export CONTAINER_FORTA_DIR_PATH=/.$FORTA_NODE_NAME\n
+        export FORTA_PASSPHRASE=\"$FORTA_PASSPHRASE\"\n
+        exec /usr/local/bin/forta \$*\n
+        """
+
+        if [ ! -f "$FORTA_SCRIPT_DIR/$FORTA_SCRIPT_FILE_NAME" ];then
+            echo -e $YY_FORTA_SCRIPT_TEMPLATE >$FORTA_SCRIPT_DIR/$FORTA_SCRIPT_FILE_NAME
+            chmod +x $FORTA_SCRIPT_DIR/$FORTA_SCRIPT_FILE_NAME
+	    echo "nohup $FORTA_SCRIPT_DIR/$FORTA_SCRIPT_FILE_NAME init >/dev/null 2>&1 &" | bash
+        else
+            echo "$FORTA_SCRIPT_DIR/$FORTA_SCRIPT_FILE_NAME already exists."
+        fi
+    done
+}
+
+create_yy_forta_script $1

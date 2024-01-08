@@ -1,6 +1,7 @@
 package config
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"strconv"
 	"strings"
@@ -102,16 +103,19 @@ func (ac AgentConfig) ImageHash() string {
 }
 
 func (ac AgentConfig) ContainerName() string {
+	//b := []byte(ac.ID + ContainerNamePrefix)
+	b := sha256.Sum256([]byte(ac.ID + ContainerNamePrefix))
+	s := fmt.Sprintf("%x", b)
 	if ac.IsStandalone {
 		// the container is already running - don't mess with the name
 		return ac.ID
 	}
 	if ac.IsLocal {
-		return fmt.Sprintf("%s-agent-%s", ContainerNamePrefix, utils.ShortenString(ac.ID, 8))
+		return fmt.Sprintf("%s-agent-%s", "forta", utils.ShortenString(s, 8))
 	}
 	_, digest := utils.SplitImageRef(ac.Image)
 
-	parts := []string{ContainerNamePrefix, "agent", utils.ShortenString(ac.ID, 8), utils.ShortenString(digest, 4)}
+	parts := []string{"forta", "agent", utils.ShortenString(s, 8), utils.ShortenString(digest, 4)}
 
 	if ac.ProtocolVersion >= 2 {
 		parts = append(parts, "c"+strconv.Itoa(ac.ChainID)) // append the chain id
