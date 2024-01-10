@@ -105,19 +105,22 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 			assignment.AgentID == "0x9aaa5cd64000e8ba4fa2718a467b90055b70815d60351914cc1cbe89fe1c404c" ||
 			assignment.AgentID == "0x617c356a4ad4b755035ef8024a87d36d895ee3cb0864e7ce9b3cf694dd80c82a" ||
 			assignment.AgentID == "0x8badbf2ad65abc3df5b1d9cc388e419d9255ef999fb69aac6bf395646cf01c14" ||
+			// Scam-detector-feed
 			assignment.AgentID == "0x1d646c4045189991fdfd24a66b192a294158b839a6ec121d740474bdacb3ab23" ||
 			assignment.AgentID == "0xe8527df509859e531e58ba4154e9157eb6d9b2da202516a66ab120deabd3f9f6" ||
 			assignment.AgentID == "0xc608f1aff80657091ad14d974ea37607f6e7513fdb8afaa148b3bff5ba305c15" ||
 			assignment.AgentID == "0x0e82982faa7878af3fad8ddf5042762a3b78d8949da2e301f1adfedc973f25ea" ||
 			assignment.AgentID == "0x887678a85e645ad060b2f096812f7c71e3d20ed6ecf5f3acde6e71baa4cf86ad" ||
 			assignment.AgentID == "0x3858be37e155f84e8e0d6212db1b47d4e83b1d41e8a2bebecb902651ed1125d6" ||
+			// Scam-detector-feed (beta2)
 			assignment.AgentID == "0xb27524b92bf27e6aa499a3a7239232ad425219b400d3c844269f4a657a4adf03" ||
 			assignment.AgentID == "0xd3061db4662d5b3406b52b20f34234e462d2c275b99414d76dc644e2486be3e9" ||
 			assignment.AgentID == "0xf496e3f522ec18ed9be97b815d94ef6a92215fc8e9a1a16338aee9603a5035fb" ||
 			assignment.AgentID == "0x2df302b07030b5ff8a17c91f36b08f9e2b1e54853094e2513f7cda734cf68a46" ||
 			assignment.AgentID == "0x112eaa6e9d705efb187be0073596e1d149a887a88660bd5491eece44742e738e" ||
 			assignment.AgentID == "0x5bb675492f3accba1d35e7f59f584b6fae11df919f13223f3056a69dc5686b4b" ||
-			assignment.AgentID == "0x80ed808b586aeebe9cdd4088ea4dea0a8e322909c0e4493c993e060e89c09ed1" ||
+			// attack-detector-feed
+			//assignment.AgentID == "0x80ed808b586aeebe9cdd4088ea4dea0a8e322909c0e4493c993e060e89c09ed1" ||
 			assignment.AgentID == "0x8e5cfc52606ac22590cf872711f81df8a0d81e3e110dee4f3fb00fafadc962c2" ||
 			assignment.AgentID == "0x44a60bde4c57e297b0152ce04dc82c2777ce77cb4b8e889edcb1bb1dfcb52a49" ||
 			assignment.AgentID == "0xf234f56095ba6c4c4782045f6d8e95d22da360bdc41b75c0549e2713a93231a4" ||

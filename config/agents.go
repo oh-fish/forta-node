@@ -103,11 +103,15 @@ func (ac AgentConfig) ImageHash() string {
 }
 
 func (ac AgentConfig) ContainerName() string {
+	// -md5
 	b := []byte(ac.ID + ContainerNamePrefix)
 	hasher := md5.New()
 	hasher.Write(b)
-	//b := sha256.Sum256([]byte(ac.ID + ContainerNamePrefix))
 	s := fmt.Sprintf("%x", hasher.Sum(nil))
+
+	// -sha256
+	//b := sha256.Sum256([]byte(ac.ID + ContainerNamePrefix))
+	//s := fmt.Sprintf("%x", b)
 	if ac.IsStandalone {
 		// the container is already running - don't mess with the name
 		return ac.ID
