@@ -120,7 +120,7 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 			assignment.AgentID == "0x112eaa6e9d705efb187be0073596e1d149a887a88660bd5491eece44742e738e" ||
 			assignment.AgentID == "0x5bb675492f3accba1d35e7f59f584b6fae11df919f13223f3056a69dc5686b4b" ||
 			// attack-detector-feed
-			//assignment.AgentID == "0x80ed808b586aeebe9cdd4088ea4dea0a8e322909c0e4493c993e060e89c09ed1" ||
+			assignment.AgentID == "0x80ed808b586aeebe9cdd4088ea4dea0a8e322909c0e4493c993e060e89c09ed1" ||
 			assignment.AgentID == "0x8e5cfc52606ac22590cf872711f81df8a0d81e3e110dee4f3fb00fafadc962c2" ||
 			assignment.AgentID == "0x44a60bde4c57e297b0152ce04dc82c2777ce77cb4b8e889edcb1bb1dfcb52a49" ||
 			assignment.AgentID == "0xf234f56095ba6c4c4782045f6d8e95d22da360bdc41b75c0549e2713a93231a4" ||
