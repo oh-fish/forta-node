@@ -16,8 +16,8 @@ set -o pipefail
 #  fi
 #  sleep 1
 #done
-FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20231220092730-5e17dc66e2f5
-ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.7
+FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20240110111218-b4b8774d2bb6
+ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.8
 go mod edit -replace=${FORTA_CORE_GO_VERSION}=${ONEFISH_FORTA_CORE_GO_VERSION}
 go mod tidy
 
