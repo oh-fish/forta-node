@@ -161,5 +161,5 @@ func GenPublicAgentNetworkName() string {
 	hasherH := md5.New()
 	hasherH.Write(bc)
 	fortaNodeIdxH := fmt.Sprintf("%x", hasherH.Sum(nil))
-	return fmt.Sprint("forta-agent-%s-%s", utils.ShortenString(fortaNodeIdx, 8), utils.ShortenString(fortaNodeIdxH, 4))
+	return fmt.Sprintf("forta-agent-%s-%s", utils.ShortenString(fortaNodeIdx, 8), utils.ShortenString(fortaNodeIdxH, 4))
 }
