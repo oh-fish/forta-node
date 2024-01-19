@@ -5,9 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	jwt_provider "github.com/forta-network/forta-node/services/jwt-provider"
-	"github.com/forta-network/forta-node/services/proc"
-	"github.com/ipfs/go-cid"
 	"io"
 	"net/http"
 	"os"
@@ -16,6 +13,10 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	jwt_provider "github.com/forta-network/forta-node/services/jwt-provider"
+	"github.com/forta-network/forta-node/services/proc"
+	"github.com/ipfs/go-cid"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/forta-network/forta-core-go/clients/agentlogs"
@@ -182,7 +183,7 @@ func (sup *SupervisorService) start() error {
 		return fmt.Errorf("failed to attach supervisor container to nats network: %v", err)
 	}
 
-	agentNetworkID, err := sup.client.EnsurePublicNetwork(sup.ctx, fmt.Sprintf("%s-agent", config.ContainerNamePrefix))
+	agentNetworkID, err := sup.client.EnsurePublicNetwork(sup.ctx, config.GenPublicAgentNetworkName())
 	if err != nil {
 		return err
 	}

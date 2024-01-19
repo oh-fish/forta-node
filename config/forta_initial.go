@@ -1,11 +1,14 @@
 package config
 
 import (
+	"crypto/md5"
 	"fmt"
-	"github.com/forta-network/forta-node/lib/typeparser"
-	log "github.com/sirupsen/logrus"
 	"path"
 	"strconv"
+
+	"github.com/forta-network/forta-core-go/utils"
+	"github.com/forta-network/forta-node/lib/typeparser"
+	log "github.com/sirupsen/logrus"
 )
 
 // InitFromEnv Init the global vars from the environment settings
@@ -146,4 +149,17 @@ func GenDefaultBotHealthCheckPort() string {
 	//}
 	port := num + 102
 	return strconv.Itoa(port)
+}
+
+func GenPublicAgentNetworkName() string {
+	b := []byte("forta" + ContainerNamePrefix)
+	hasher := md5.New()
+	hasher.Write(b)
+	fortaNodeIdx := fmt.Sprintf("%x", hasher.Sum(nil))
+
+	bc := []byte(ContainerNamePrefix)
+	hasherH := md5.New()
+	hasherH.Write(bc)
+	fortaNodeIdxH := fmt.Sprintf("%x", hasherH.Sum(nil))
+	return fmt.Sprint("forta-agent-%s-%s", utils.ShortenString(fortaNodeIdx, 8), utils.ShortenString(fortaNodeIdxH, 4))
 }
