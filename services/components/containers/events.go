@@ -81,6 +81,21 @@ func (es *eventHandler) HandleEvent(ctx context.Context, event *events.Message) 
 			botID = "system"
 		}
 		containerName := getEventAttribute(event, "name")
+		if strings.Contains(containerName, "scanner") {
+			containerName = "forta-scanner"
+		}
+		if strings.Contains(containerName, "inspector") {
+			containerName = "forta-inspector"
+		}
+		if strings.Contains(containerName, "nats") {
+			containerName = "forta-nats"
+		}
+		if strings.Contains(containerName, "supervisor") {
+			containerName = "forta-supervisor"
+		}
+		if strings.Contains(containerName, "json-rpc") {
+			containerName = "forta-json-rpc"
+		}
 		metric = metrics.CreateEventMetric(ts, botID, metricNameFrom(event), containerName)
 
 	default:
