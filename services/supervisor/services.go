@@ -448,7 +448,7 @@ func (sup *SupervisorService) start() error {
 	go func() {
 		// wait for the publisher so it can catch the metrics
 		time.Sleep(time.Minute)
-		containers.ListenToDockerEvents(sup.ctx, sup.globalClient, sup.msgClient, startTime)
+		go containers.ListenToDockerEvents(sup.ctx, sup.globalClient, sup.msgClient, startTime)
 	}()
 
 	log.Infof("[REJJIE-INFO] - trying to get or create Container [%s]", config.DockerScannerContainerName)
