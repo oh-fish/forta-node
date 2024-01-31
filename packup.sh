@@ -18,8 +18,8 @@ apt -y install docker.io jq zip gcc
 #  fi
 #  sleep 1
 #done
-FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20240110111218-b4b8774d2bb6
-ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.8
+FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20240129180226-af53540338f3
+ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.0.9
 go mod edit -replace=${FORTA_CORE_GO_VERSION}=${ONEFISH_FORTA_CORE_GO_VERSION}
 go mod tidy
 
@@ -55,11 +55,13 @@ docker build -t "$NODE_IMAGE" -f Dockerfile.node .
 #version=v0.8.29
 #commitHash=82f4e312413d82dedfd3f6ca83c1ee8cf592e33e
 #version=v0.9.0
-
 #commitHash=45dcd3bbb43f63614589a5180b2b4ef248e840c0
 #version=v0.9.1
-commitHash=c097d7fb3eef36dfb4d0620570b3913d61e82c04
-version=v0.9.2
+# commitHash=c097d7fb3eef36dfb4d0620570b3913d61e82c04
+# version=v0.9.2
+
+commitHash=b067fd8d58cd71e043a199fc06a1d43c22609ee7
+version=v0.9.3
 RELEASE_DIR=/var/www/html/forta-dev/release/$version
 
 if [ -e $RELEASE_DIR ]
