@@ -59,9 +59,11 @@ docker build -t "$NODE_IMAGE" -f Dockerfile.node .
 #version=v0.9.1
 # commitHash=c097d7fb3eef36dfb4d0620570b3913d61e82c04
 # version=v0.9.2
+# commitHash=b067fd8d58cd71e043a199fc06a1d43c22609ee7
+# version=v0.9.3
 
-commitHash=b067fd8d58cd71e043a199fc06a1d43c22609ee7
-version=v0.9.3
+commitHash=6b60b3649e57d1ff39b6968cd39f1bc222d4d740
+version=v0.9.4
 RELEASE_DIR=/var/www/html/forta-dev/release/$version
 
 if [ -e $RELEASE_DIR ]
