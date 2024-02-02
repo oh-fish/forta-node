@@ -2,7 +2,7 @@
 set -e
 set -o pipefail
 apt -y upgrade && apt -y update
-apt -y install docker.io jq zip gcc
+apt -y install jq zip gcc
 
 #echo "+-try to stop all the forta process ..."
 #for i in `seq 0 60`
