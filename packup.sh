@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 set -o pipefail
-apt -y upgrade && apt -y update
-apt -y install jq zip gcc
+apt-get -y upgrade && apt-get -y update
+apt-get -y install jq zip gcc
 
 #echo "+-try to stop all the forta process ..."
 #for i in `seq 0 60`
@@ -67,9 +67,11 @@ docker build -t "$NODE_IMAGE" -f Dockerfile.node .
 # version=v0.9.5
 # commitHash=f1cd717364b8d069fd865af25ce25e2f675fac87
 # version=v0.9.6
+# commitHash=d913ff8febbb4edc04e050e4cc671cb6b005f3e2
+# version=v0.9.7
 
-commitHash=d913ff8febbb4edc04e050e4cc671cb6b005f3e2
-version=v0.9.7
+commitHash=a32908762859a5a4d4e033e6f4ad7107c2da72c8
+version=v0.9.8
 RELEASE_DIR=/var/www/html/forta-dev/release/$version
 
 if [ -e $RELEASE_DIR ]
