@@ -106,6 +106,19 @@ do
     then
         echo "try to run $f ... "
         nohup $f run > /dev/null 2>&1 &
+        cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+        while [ ! $cid_for_run ];
+        do
+            echo "+- checking forta$i processing ..."
+            forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
+            if [ $forta_pid ];then
+                cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+            else
+                nohup $f run > /dev/null 2>&1 &
+            fi
+            sleep 5
+        done
+        echo "+- forta$i-scanner is running ..."
         sleep $interval
     fi
 done
