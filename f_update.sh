@@ -111,7 +111,7 @@ do
         do
             echo "+- checking forta$i processing ..."
             forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
-            if [ $forta_pid ];then
+            if [ $forta_pid -gt 0 ];then
                 cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
             else
                 nohup $f run > /dev/null 2>&1 &
