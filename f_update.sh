@@ -43,11 +43,11 @@ do
     FORTA_DIR="/root/.forta-n$i"
     if [ -d $FORTA_DIR ];then
         forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
-        echo "killing - [$FORTA_DIR] - pid - [${forta_pid//\"/}] ..."
         if [ ! ${forta_pid//\"/} -eq 0 ];then
+            echo "killing - [$FORTA_DIR] - pid - [${forta_pid//\"/}] ..."
             kill ${forta_pid//\"/}
+            echo "killed - [$FORTA_DIR] - pid - [${forta_pid//\"/}]"
         fi
-        echo "killed - [$FORTA_DIR] - pid - [${forta_pid//\"/}]"
     fi
     sleep 1
 done
@@ -102,6 +102,9 @@ for i in 01 02 03 04 05 06 07 08 09 10 #11 12 13 14 15 16 17 18 19 20
 do
     f="/usr/local/bin/yy_forta_n$i"
     FORTA_DIR="/root/.forta-n$i"
+    if [ ! -d $FORTA_DIR ];then
+        continue
+    fi
     if test -x $f
     then
         echo "try to run $f ... "
@@ -110,12 +113,16 @@ do
         while [ ! $cid_for_run ];
         do
             echo "+- checking forta$i processing ..."
-            forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
-            if [ $forta_pid != "0" ];then
-                cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
-            else
-                nohup $f run > /dev/null 2>&1 &
-            fi
+	    if [ -f $FORTA_DIR/runner_info/runner ];then
+                forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
+                if [ ${forta_pid//\"/} -ne 0 ];then
+                    cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+                else
+                    nohup $f run > /dev/null 2>&1 &
+                fi
+	    else
+	        cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+	    fi
             sleep 5
         done
         echo "+- forta$i-scanner is running ..."
