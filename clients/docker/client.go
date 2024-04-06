@@ -507,6 +507,9 @@ func (d *dockerClient) TransContainer(ctx context.Context, config ContainerConfi
 	}
 	if tryToFound {
 		inspection, err := d.cli.ContainerInspect(ctx, tryToFoundContainer.ID)
+		if inspection.State.Status != "running" && tryToFoundContainer.Names[0][1:] == "forta-jwt-provider" {
+			err = d.cli.ContainerStart(ctx, tryToFoundContainer.ID, types.ContainerStartOptions{})
+		}
 		if err != nil {
 			return nil, err
 		}
