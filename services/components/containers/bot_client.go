@@ -132,6 +132,8 @@ func (bc *botClient) pollDockerResources(containerID string, agentConfig config.
 	ticker := initTicker(DockerResourcesPollingInterval)
 	defer ticker.Stop()
 
+	var previousResources docker.ContainerResources
+
 	for t := range ticker.C {
 		logrus.WithField("containerID", containerID).Debug("polling docker resources")
 		// request docker stats
@@ -161,9 +163,11 @@ func (bc *botClient) pollDockerResources(containerID string, agentConfig config.
 			WithField("resources", resources).
 			Debug("sending docker resources metrics")
 
+		cpuPercent := calculateCPUPercentUnix(&previousResources, resources)
+
 		metrics.SendAgentMetrics(bc.msgClient, []*protocol.AgentMetric{
 			metrics.CreateAgentResourcesMetric(
-				agentConfig, t, domain.MetricDockerResourcesCPU, float64(resources.CPUStats.CPUUsage.TotalUsage)),
+				agentConfig, t, domain.MetricDockerResourcesCPU, cpuPercent),
 			metrics.CreateAgentResourcesMetric(
 				agentConfig, t, domain.MetricDockerResourcesMemory, float64(resources.MemoryStats.Usage)),
 			metrics.CreateAgentResourcesMetric(
@@ -171,7 +175,24 @@ func (bc *botClient) pollDockerResources(containerID string, agentConfig config.
 			metrics.CreateAgentResourcesMetric(
 				agentConfig, t, domain.MetricDockerResourcesNetworkReceive, float64(bytesRecv)),
 		})
+
+		previousResources = *resources
 	}
+}
+
+func calculateCPUPercentUnix(previousResources, resources *docker.ContainerResources) float64 {
+	var (
+		cpuPercent = 0.0
+		// calculate the change for the cpu usage of the container in between readings
+		cpuDelta = float64(resources.CPUStats.CPUUsage.TotalUsage) - float64(previousResources.CPUStats.CPUUsage.TotalUsage)
+		// calculate the change for the entire system between readings
+		systemDelta = float64(resources.CPUStats.SystemUsage) - float64(previousResources.CPUStats.SystemUsage)
+	)
+
+	if systemDelta > 0.0 && cpuDelta > 0.0 {
+		cpuPercent = (cpuDelta / systemDelta) * float64(resources.CPUStats.OnlineCPUs) * 100.0
+	}
+	return cpuPercent
 }
 
 func (bc *botClient) attachServiceContainers(ctx context.Context, botNetworkID string) error {
