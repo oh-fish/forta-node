@@ -1,0 +1,54 @@
+#!/bin/bash
+# boot up all the nodes
+#sleep 28
+
+docker container prune --force
+docker network prune --force
+
+interval=10
+# boot up all the nodes
+echo "+-try to boot up all nodes with interval=$interval ... "
+for i in 01 02 03 04 05 06 07 08 09 10
+do
+    f="/usr/local/bin/yy_forta_n$i"
+    FORTA_DIR="/root/.forta-n$i"
+    if [ ! -d $FORTA_DIR ];then
+        continue
+    fi
+
+    if [ -f $FORTA_DIR/.combiner_cache.json ];then
+        rm $FORTA_DIR/.combiner_cache.json
+    fi
+
+    if [ -f $FORTA_DIR/.last-batch ];then
+        rm $FORTA_DIR/.combiner_cache.json
+    fi
+
+    if [ -f $FORTA_DIR/.last-receipt ];then
+        rm $FORTA_DIR/.last-receipt
+    fi
+
+    if test -x $f
+    then
+        echo "try to run $f ... "
+        nohup $f run > /dev/null 2>&1 &
+        cid_for_run=`docker ps|grep forta$i-nats|awk '{print $1}'`
+        while [ ! $cid_for_run ];
+        do
+            echo "+- checking forta$i processing ..."
+            if [ -f $FORTA_DIR/runner_info/runner ];then
+                forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
+                if [ ${forta_pid//\"/} -ne 0 ];then
+                    cid_for_run=`docker ps|grep forta$i-nats|awk '{print $1}'`
+                else
+                    nohup $f run > /dev/null 2>&1 &
+                fi
+            else
+                cid_for_run=`docker ps|grep forta$i-nats|awk '{print $1}'`
+            fi
+            sleep 5
+        done
+        echo "+- forta$i-scanner is running ..."
+        sleep $interval
+    fi
+done
