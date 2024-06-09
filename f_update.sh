@@ -105,27 +105,38 @@ do
     if [ ! -d $FORTA_DIR ];then
         continue
     fi
+    if [ -f $FORTA_DIR/.combiner_cache.json ];then
+        rm $FORTA_DIR/.combiner_cache.json
+    fi
+
+    if [ -f $FORTA_DIR/.last-batch ];then
+        rm $FORTA_DIR/.combiner_cache.json
+    fi
+
+    if [ -f $FORTA_DIR/.last-receipt ];then
+        rm $FORTA_DIR/.last-receipt
+    fi
     if test -x $f
     then
         echo "try to run $f ... "
         nohup $f run > /dev/null 2>&1 &
-        cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+        cid_for_run=`docker ps|grep forta$i-nats|awk '{print $1}'`
         while [ ! $cid_for_run ];
         do
             echo "+- checking forta$i processing ..."
 	    if [ -f $FORTA_DIR/runner_info/runner ];then
                 forta_pid=`cat $FORTA_DIR/runner_info/runner |jq ".pid"`
                 if [ ${forta_pid//\"/} -ne 0 ];then
-                    cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+                    cid_for_run=`docker ps|grep forta$i-nats|awk '{print $1}'`
                 else
                     nohup $f run > /dev/null 2>&1 &
                 fi
 	    else
-	        cid_for_run=`docker ps|grep forta$i-scanner|awk '{print $1}'`
+	        cid_for_run=`docker ps|grep forta$i-nats|awk '{print $1}'`
 	    fi
             sleep 5
         done
-        echo "+- forta$i-scanner is running ..."
+        echo "+- forta$i-nats is running ..."
         sleep $interval
     fi
 done
