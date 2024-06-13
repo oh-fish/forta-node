@@ -65,6 +65,7 @@ func (bl *botLogger) SendBotLogs(ctx context.Context, snapshotInterval time.Dura
 	}
 
 	for _, container := range botContainers {
+		container.Labels[docker.LabelFortaSettingsAgentLogsEnable] = "false"
 		if container.Labels[docker.LabelFortaSettingsAgentLogsEnable] != "true" {
 			continue
 		}

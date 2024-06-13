@@ -164,7 +164,7 @@ func (bc *botClient) pollDockerResources(containerID string, agentConfig config.
 			Debug("sending docker resources metrics")
 
 		cpuPercent := calculateCPUPercentUnix(&previousResources, resources)
-
+		logrus.WithField("containerID", containerID).Infof("cpuPercent: %v, usage: %v, bytesSent: %v, bytesRecv: %v ", cpuPercent, float64(resources.MemoryStats.Usage), float64(bytesSent), float64(bytesRecv))
 		metrics.SendAgentMetrics(bc.msgClient, []*protocol.AgentMetric{
 			metrics.CreateAgentResourcesMetric(
 				agentConfig, t, domain.MetricDockerResourcesCPU, cpuPercent),
