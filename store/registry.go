@@ -88,6 +88,7 @@ func (rs *registryStore) GetAgentsIfChanged(scanner string) ([]config.AgentConfi
 
 	for _, assignment := range assignments {
 		logger := log.WithField("botId", assignment.AgentID)
+		continue
 		if assignment.AgentID == "0xa20699d82a7b3f3aef3a4e861efa46efb1ecbabac6d78a1d842f23c655fb0205" ||
 			assignment.AgentID == "0xa53515a09b38933c89ceea3edc4fbb42614cd270b356d93d1eea25779f64eff1" ||
 			assignment.AgentID == "0x0b241032ca430d9c02eaa6a52d217bbff046f0d1b3f3d2aa928e42a97150ec91" ||
