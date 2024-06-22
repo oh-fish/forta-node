@@ -110,7 +110,7 @@ do
     fi
 
     if [ -f $FORTA_DIR/.last-batch ];then
-        rm $FORTA_DIR/.combiner_cache.json
+        rm $FORTA_DIR/.last-batch
     fi
 
     if [ -f $FORTA_DIR/.last-receipt ];then
