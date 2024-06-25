@@ -20,4 +20,5 @@ var (
 	DefaultFortaAgentNetWorkName = "forta-agent"
 	DefaultFortaNatsNetWorkName  = "forta-nats"
 	DefaultRunnerProcName        = "runner"
+	DefaultFortaPassphrase       = ""
 )

@@ -12,6 +12,7 @@ import (
 	"github.com/forta-network/forta-node/services/components"
 	"github.com/forta-network/forta-node/services/components/registry"
 	"github.com/forta-network/forta-node/services/supervisor"
+	log "github.com/sirupsen/logrus"
 )
 
 func initServices(ctx context.Context, cfg config.Config) ([]services.Service, error) {
@@ -21,6 +22,9 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 	cfg.AgentLogsConfig.URL = utils.ConvertToDockerHostURL(cfg.AgentLogsConfig.URL)
 
 	passphrase, err := security.ReadPassphrase()
+	//config.DefaultFortaPassphrase
+	log.Infof(" ---  ---- --- -- passphrase: %v", passphrase)
+
 	if err != nil {
 		return nil, err
 	}

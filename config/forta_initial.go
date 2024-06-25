@@ -25,6 +25,7 @@ func InitFromEnv() {
 	DefaultBotHealthCheckPort = GenDefaultBotHealthCheckPort()
 
 	DefaultFortaNodeBinaryPath = typeparser.EnvGetString("FORTA_NODE_BINARY_PATH", DefaultFortaNodeBinaryPath)
+	DefaultFortaPassphrase = typeparser.EnvGetString("FORTA_PASSPHRASE", DefaultFortaPassphrase)
 
 	// check and override the default containers config
 	ContainerNamePrefix = typeparser.EnvGetString("CONTAINER_NAME_PREFIX", ContainerNamePrefix)
