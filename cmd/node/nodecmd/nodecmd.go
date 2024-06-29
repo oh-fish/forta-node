@@ -9,6 +9,7 @@ import (
 	"github.com/forta-network/forta-node/cmd/storage"
 	"github.com/forta-network/forta-node/cmd/supervisor"
 	"github.com/forta-network/forta-node/cmd/updater"
+	"github.com/forta-network/forta-node/config"
 	"github.com/spf13/cobra"
 )
 
@@ -98,6 +99,6 @@ func init() {
 }
 
 func Run() error {
-	//config.InitFromEnv()
+	config.InitFromEnv()
 	return cmdFortaNode.Execute()
 }
