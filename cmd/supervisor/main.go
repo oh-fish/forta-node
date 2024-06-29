@@ -25,6 +25,8 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 	//config.DefaultFortaPassphrase
 
 	log.Infof(" ---  ---- --- -- passphrase: %v", config.DefaultFortaPassphrase)
+	log.Infof(" ---  ---- --- -- containerPrefix: %v", config.ContainerNamePrefix)
+	log.Infof(" ---  ---- --- -- DockerClientNamePrefix: %v", config.DockerClientNamePrefix)
 
 	if err != nil {
 		return nil, err
