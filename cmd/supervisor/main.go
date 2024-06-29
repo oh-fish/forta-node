@@ -23,6 +23,7 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 
 	passphrase, err := security.ReadPassphrase()
 	//config.DefaultFortaPassphrase
+	config.InitFromEnv()
 	log.Infof(" ---  ---- --- -- passphrase: %v", config.DefaultFortaPassphrase)
 
 	if err != nil {
@@ -84,6 +85,5 @@ func summarizeReports(reports health.Reports) *health.Report {
 }
 
 func Run() {
-	config.InitFromEnv()
 	services.ContainerMain("supervisor", initServices)
 }
