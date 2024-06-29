@@ -84,5 +84,6 @@ func summarizeReports(reports health.Reports) *health.Report {
 }
 
 func Run() {
+	config.InitFromEnv()
 	services.ContainerMain("supervisor", initServices)
 }
