@@ -24,7 +24,7 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 	passphrase, err := security.ReadPassphrase()
 	//config.DefaultFortaPassphrase
 
-	log.Infof(" ---  ---- --- -- passphrase: %v", config.ContainerNamePrefix)
+	log.Infof(" ---  ---- --- -- passphrase: %v", config.DefaultFortaPassphrase)
 
 	if err != nil {
 		return nil, err

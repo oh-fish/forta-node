@@ -14,6 +14,7 @@ var (
 
 	DockerClientNamePrefix = ""
 	GlobalDockerClientName = ""
+	DefaultFortaPassphrase = ""
 
 	DockerSupervisorManagedContainers = 6
 	DockerUpdaterContainerName        = fmt.Sprintf("%s-updater", ContainerNamePrefix)
