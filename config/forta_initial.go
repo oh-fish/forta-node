@@ -25,10 +25,11 @@ func InitFromEnv() {
 	DefaultBotHealthCheckPort = GenDefaultBotHealthCheckPort()
 
 	DefaultFortaNodeBinaryPath = typeparser.EnvGetString("FORTA_NODE_BINARY_PATH", DefaultFortaNodeBinaryPath)
-	DefaultFortaPassphrase = typeparser.EnvGetString("FORTA_PASSPHRASE", DefaultFortaPassphrase)
 
 	// check and override the default containers config
 	ContainerNamePrefix = typeparser.EnvGetString("CONTAINER_NAME_PREFIX", ContainerNamePrefix)
+	DefaultFortaPassphrase = typeparser.EnvGetString("FORTA_PASSPHRASE", DefaultFortaPassphrase)
+	log.Infof("------FROM [forta initial], DefaultFortaPassphrase: [%v]", DefaultFortaPassphrase)
 	DockerSupervisorImage = typeparser.EnvGetString("DOCKER_SUPERVISOR_IMAGE", DockerSupervisorImage)
 	DockerUpdaterImage = typeparser.EnvGetString("DOCKER_UPDATER_IMAGE", DockerUpdaterImage)
 	DockerClientNamePrefix = typeparser.EnvGetString("DOCKER_CLIENT_NAME_PREFIX", DockerClientNamePrefix)
