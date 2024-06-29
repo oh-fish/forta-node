@@ -15,7 +15,8 @@ var nodeConfig config.Config
 func initServices(ctx context.Context, cfg config.Config) ([]services.Service, error) {
 	nodeConfig = cfg
 
-	key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	//key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	key, err := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, config.DefaultFortaPassphrase)
 	if err != nil {
 		return nil, err
 	}

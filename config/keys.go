@@ -2,10 +2,10 @@ package config
 
 import (
 	"fmt"
+	"github.com/forta-network/forta-core-go/security"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/forta-network/forta-core-go/security"
 )
 
 // LoadKeyInContainer loads the key in the service container depending on the config.
@@ -21,5 +21,6 @@ func LoadKeyInContainer(cfg Config) (*keystore.Key, error) {
 			Address:    publicAddr,
 		}, nil
 	}
-	return security.LoadKey(DefaultContainerKeyDirPath)
+	//return security.LoadKey(DefaultContainerKeyDirPath)
+	return security.LoadKeyWithPassphrase(DefaultContainerKeyDirPath, DefaultFortaPassphrase)
 }

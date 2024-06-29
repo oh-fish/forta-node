@@ -315,7 +315,8 @@ func (p *PublicAPIProxy) testAPI() {
 }
 
 func NewPublicAPIProxy(ctx context.Context, cfg config.Config) (*PublicAPIProxy, error) {
-	key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	//key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	key, err := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, config.DefaultFortaPassphrase)
 	if err != nil {
 		return nil, err
 	}

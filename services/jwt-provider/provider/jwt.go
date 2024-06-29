@@ -38,7 +38,8 @@ func NewJWTProvider(cfg config.Config) (JWTProvider, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create the global docker client: %v", err)
 	}
-	key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	//key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	key, err := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, config.DefaultFortaPassphrase)
 	if err != nil {
 		return nil, err
 	}

@@ -12,7 +12,6 @@ import (
 	"github.com/forta-network/forta-node/services/components"
 	"github.com/forta-network/forta-node/services/components/registry"
 	"github.com/forta-network/forta-node/services/supervisor"
-	log "github.com/sirupsen/logrus"
 )
 
 func initServices(ctx context.Context, cfg config.Config) ([]services.Service, error) {
@@ -21,17 +20,19 @@ func initServices(ctx context.Context, cfg config.Config) ([]services.Service, e
 	cfg.Registry.IPFS.GatewayURL = utils.ConvertToDockerHostURL(cfg.Registry.IPFS.GatewayURL)
 	cfg.AgentLogsConfig.URL = utils.ConvertToDockerHostURL(cfg.AgentLogsConfig.URL)
 
-	passphrase, err := security.ReadPassphrase()
+	//passphrase, err := security.ReadPassphrase()
 	//config.DefaultFortaPassphrase
 
-	log.Infof(" ---  ---- --- -- passphrase: %v", config.DefaultFortaPassphrase)
-	log.Infof(" ---  ---- --- -- containerPrefix: %v", config.ContainerNamePrefix)
-	log.Infof(" ---  ---- --- -- DockerClientNamePrefix: %v", config.DockerClientNamePrefix)
+	//log.Infof(" ---  ---- --- -- passphrase: %v", config.DefaultFortaPassphrase)
+	//log.Infof(" ---  ---- --- -- containerPrefix: %v", config.ContainerNamePrefix)
+	//log.Infof(" ---  ---- --- -- DockerClientNamePrefix: %v", config.DockerClientNamePrefix)
 
-	if err != nil {
-		return nil, err
-	}
-	key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	//if err != nil {
+	//	return nil, err
+	//}
+	passphrase := config.DefaultFortaPassphrase
+	//key, err := security.LoadKey(config.DefaultContainerKeyDirPath)
+	key, err := security.LoadKeyWithPassphrase(config.DefaultContainerKeyDirPath, passphrase)
 	if err != nil {
 		return nil, err
 	}
