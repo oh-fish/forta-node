@@ -100,6 +100,7 @@ func EnvBase(envs map[string]string) map[string]string {
 		"GLOBAL_DOCKER_CLIENT_NAME": GlobalDockerClientName,
 		// dir path setting
 		"CONTAINER_FORTA_DIR_PATH": DefaultContainerFortaDirPath,
+		"FORTA_PASSPHRASE":         DefaultFortaPassphrase,
 	}
 
 	if envs != nil {
