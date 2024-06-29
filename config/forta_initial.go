@@ -12,6 +12,7 @@ import (
 )
 
 // InitFromEnv Init the global vars from the environment settings
+// use for forta client running env
 func InitFromEnv() {
 	// check and override the default port config
 	DefaultNatsPort = typeparser.EnvGetString("FORTA_NATS_PORT", DefaultNatsPort)
@@ -28,11 +29,7 @@ func InitFromEnv() {
 
 	// check and override the default containers config
 	ContainerNamePrefix = typeparser.EnvGetString("CONTAINER_NAME_PREFIX", ContainerNamePrefix)
-	log.Infof("------FROM [forta initial], ContainerNamePrefix: [%v]", ContainerNamePrefix)
-
 	DefaultFortaPassphrase = typeparser.EnvGetString("FORTA_PASSPHRASE", DefaultFortaPassphrase)
-	log.Infof("------FROM [forta initial], DefaultFortaPassphrase: [%v]", DefaultFortaPassphrase)
-
 	DockerSupervisorImage = typeparser.EnvGetString("DOCKER_SUPERVISOR_IMAGE", DockerSupervisorImage)
 	DockerUpdaterImage = typeparser.EnvGetString("DOCKER_UPDATER_IMAGE", DockerUpdaterImage)
 	DockerClientNamePrefix = typeparser.EnvGetString("DOCKER_CLIENT_NAME_PREFIX", DockerClientNamePrefix)
@@ -78,6 +75,7 @@ func InitFromEnv() {
 		", JTW_PROVIDER_CONTAINER_NAME: ", DockerJWTProviderContainerName)
 }
 
+// use for docker container running env
 func EnvBase(envs map[string]string) map[string]string {
 	base := map[string]string{
 		"FORTA_NATS_PORT":        DefaultNatsPort,
