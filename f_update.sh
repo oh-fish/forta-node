@@ -38,7 +38,7 @@ if [ ! -f /var/www/html/forta-nats.tar ]; then
     wget http://$ADDR:$RESOURCE_PORT/forta-nats.tar -O /var/www/html/forta-nats.tar
 fi
 
-for i in 01 02 03 04 05 06 07 08 09 10
+for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16
 do
     FORTA_DIR="/root/.forta-n$i"
     if [ -d $FORTA_DIR ];then
