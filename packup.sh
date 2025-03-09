@@ -19,7 +19,7 @@ apt-get -y install jq zip gcc
 #  sleep 1
 #done
 FORTA_CORE_GO_VERSION=github.com/forta-network/forta-core-go@v0.0.0-20240423071831-edccde967e5b
-ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.1.4
+ONEFISH_FORTA_CORE_GO_VERSION=github.com/oh-fish/forta-core-go@v0.1.6
 go mod edit -replace=${FORTA_CORE_GO_VERSION}=${ONEFISH_FORTA_CORE_GO_VERSION}
 go mod tidy
 
