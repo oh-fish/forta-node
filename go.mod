@@ -294,4 +294,7 @@ require (
 	lukechampine.com/blake3 v1.1.7 // indirect
 )
 
-replace github.com/forta-network/forta-core-go v0.0.0-20231106113111-7ec637713f66 => github.com/oh-fish/forta-core-go v0.0.2
+replace (
+	github.com/forta-network/forta-core-go v0.0.0-20231106113111-7ec637713f66 => github.com/oh-fish/forta-core-go v0.0.2
+	github.com/forta-network/forta-core-go v0.0.0-20240423071831-edccde967e5b => github.com/oh-fish/forta-core-go v0.1.6
+)
